@@ -1,3 +1,7 @@
+<!-- 
+Modified version of
+http://code.tutsplus.com/tutorials/real-world-oop-with-php-and-mysql--net-1918
+-->
 <?php
 class Database{
     private $db_host = '127.0.0.1'; 

@@ -9,13 +9,22 @@ $db->connect();
 $db->select('character_info');
 $res = $db->getResult();
 ?>
+<style>
+    th{
+        text-align:left;
+    }
+</style>
 </head>
 <body>
-    <ul>
+    <table style="width:80%">
+        <tr>
+            <th>id</th>
+            <th>Name</th>
+        </tr>
         <?php
           foreach($res as $characte)
-              echo "<li>".$characte['name']."</li>"
+              echo "<tr> <td>".$characte['character_id']."</td><td>".$characte['name']."</td></tr>"
         ?>
-    </ul>
+    </table>
 </body>     
 </html>
