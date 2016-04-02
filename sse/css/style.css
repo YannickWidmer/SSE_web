@@ -31,7 +31,6 @@ button {
     margin-right: 5%;
     width:90%;
     margin-left: auto;
-    
 }
 /* Navigation Button */
 .navi_button{
@@ -56,16 +55,22 @@ button {
   background: darkturquoise;
   opacity: 1;
 }
-/*General relations at the bottom*/
-.container#relations{
-    width:100%;
+/* Content*/
+#main{
+overflow: hidden;
+position: absolute;
+left: 15%;
+top: 180px; /*must be the same as footer*/
+width: 60%;
+border: solid violet 10px
 }
+
 
 ul.relationList{
     list-style: none;
-    float: left;
-    width:12%;
-    height:300px; 
+    float: top;
+    width:100%;
+    max-height:300px; 
     overflow:auto;
 }
 
@@ -215,11 +220,14 @@ ul.relationList{
 /********************/
 /* EXPANDABLE LIST  */
 /********************/
-#listContainer{
-  margin-top:15px;
-  width: 200px;
-  height: 300px;
+#tree_browser{
+    position: fixed;
+    left:0;
+    top: 200px;
+  height: 100%;
+  width: 12%;
   overflow: auto;
+  border: solid activeborder 10px;
 }
 
 #expList ul, li {

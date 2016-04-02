@@ -1,6 +1,6 @@
 <link href="/css/style.css" rel="stylesheet" type="text/css">    
 
-<div id="relations">
+<div style="float:right; width:20%;">
     <ul class="relationList">
         <li><h2>Story <button class="navi_button">+</button></h2>  
             
@@ -84,4 +84,4 @@
         <li>dummy6</li>
         <li>dummy7</li>
     </ul>
-</div>
+</div >

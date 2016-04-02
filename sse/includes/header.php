@@ -1,6 +1,6 @@
 <link href="/css/style.css" rel="stylesheet" type="text/css">    
 
-<header>
+<div id="header">
 <div style="text-align:right; padding: 15px 15px">
       <img  style="width:120px; height: 120px;"        
        alt="Logo"
@@ -21,4 +21,4 @@
       <button class="navi_button">Charaktere</button>
       <button class="navi_button">Parameter</button>
   </nav>
-</header>
+</div>
