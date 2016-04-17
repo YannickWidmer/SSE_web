@@ -1,0 +1,26 @@
+
+# Generated files
+sse/app/**/*.js
+sse/app/**/*.map
+
+# Folders sustained by scripts
+sse/typings
+sse/nbproject
+sse/node_modules
+sse/jspm_packages
+sse/bower_components
+
+
+
+# Wamp files
+add_vhost.php
+favicon.ico
+index.php
+test_sockets.php
+testmysql.php
+
+# Wamp filders
+wampthemes
+
+
+
