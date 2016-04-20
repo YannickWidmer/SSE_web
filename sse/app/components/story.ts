@@ -18,19 +18,29 @@
 import {Component, Input, OnInit } from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 
+import {MarkdownService}  from '../services/markdown-converter' 
+
+
 @Component({
   selector: 'my-story',
-  templateUrl: 'app/component/foes.html'
+  templateUrl: 'app/components/story.html',
+  //bindings: [MarkdownService]
 })
 export class StoryComponent implements OnInit {
+    public html: string;
+    private md: MarkdownService;
     
     constructor(
-         private _routeParams: RouteParams) {
+         private _routeParams: RouteParams, private _converter: MarkdownService) {
+         this.html ='';
+         this.md = _converter;
     }
     
     ngOnInit() {
-        //let id = +this._routeParams.get('id');
-        //this._heroService.getHeroesSlowly().then(heroes => this.heroes = heroes);
+    }
+    
+    public updateValue(val:string) {
+        if(!val) { return ''; }
+        this.html = this._converter.convert(val);
     }
 }
-

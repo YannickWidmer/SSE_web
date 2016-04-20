@@ -1,6 +1,8 @@
 import {Component} from 'angular2/core';
 import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from 'angular2/router';
 
+import {MarkdownService}  from './services/markdown-converter' 
+
 import {GeographieComponent} from './components/geographie';
 import {StoryComponent} from './components/story';
 import {ItemsComponent} from './components/items';
@@ -16,8 +18,8 @@ import {PlayerCharactersComponent} from './components/playerCharacters';
     <h1>{{title}}</h1>
     <nav>
         <a [routerLink]="['Geographie']">Geographie</a>
-        <!--<a [routerLink]="['Story']">Geschichte</a>
-        <a [routerLink]="['Items']">Objekte</a>
+        <a [routerLink]="['Story']">Geschichte</a>
+        <!--<a [routerLink]="['Items']">Objekte</a>
         <a [routerLink]="['Npcs']">NPC</a>
         <a [routerLink]="['Foes']">Gegner</a>
         <a [routerLink]="['Players']">Spieler</a>
@@ -27,7 +29,7 @@ import {PlayerCharactersComponent} from './components/playerCharacters';
     `,
     styleUrls:['app/app.component.css'],
     directives: [ROUTER_DIRECTIVES],
-    providers: [ROUTER_PROVIDERS]  // Add app wide services here
+    providers: [ROUTER_PROVIDERS,MarkdownService]  // Add app wide services here
  })
 
 @RouteConfig([
