@@ -18,29 +18,22 @@
 import {Component, Input, OnInit } from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 
-import {MarkdownService}  from '../services/markdown-converter' 
+import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer' 
 
 
 @Component({
   selector: 'my-story',
-  templateUrl: 'app/components/story.html',
-  //bindings: [MarkdownService]
+  directives: [MdEditorDisplayerComponent],
+  templateUrl: 'app/components/story.html'
 })
 export class StoryComponent implements OnInit {
-    public html: string;
-    private md: MarkdownService;
+    private rawMarkdown: string;
     
     constructor(
-         private _routeParams: RouteParams, private _converter: MarkdownService) {
-         this.html ='';
-         this.md = _converter;
+         private _routeParams: RouteParams) {
+        this.rawMarkdown = 'sdlfhdslfhdslf';
     }
     
     ngOnInit() {
-    }
-    
-    public updateValue(val:string) {
-        if(!val) { return ''; }
-        this.html = this._converter.convert(val);
     }
 }

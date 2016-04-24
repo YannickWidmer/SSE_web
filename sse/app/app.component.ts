@@ -15,17 +15,25 @@ import {PlayerCharactersComponent} from './components/playerCharacters';
     selector: 'my-app',
     template: 
     `
-    <h1>{{title}}</h1>
-    <nav>
-        <a [routerLink]="['Geographie']">Geographie</a>
-        <a [routerLink]="['Story']">Geschichte</a>
-        <!--<a [routerLink]="['Items']">Objekte</a>
-        <a [routerLink]="['Npcs']">NPC</a>
-        <a [routerLink]="['Foes']">Gegner</a>
-        <a [routerLink]="['Players']">Spieler</a>
-        <a [routerLink]="['PlayerCharacters']">Charaktere</a> -->
-    </nav>
-    <router-outlet></router-outlet>
+    <header>
+        <h1>{{title}}</h1>
+        <nav>
+           <a [routerLink]="['Geographie']">Geographie</a>
+           <a [routerLink]="['Story']">Geschichte</a>
+           <!--<a [routerLink]="['Items']">Objekte</a>
+           <a [routerLink]="['Npcs']">NPC</a>
+           <a [routerLink]="['Foes']">Gegner</a>
+           <a [routerLink]="['Players']">Spieler</a>
+           <a [routerLink]="['PlayerCharacters']">Charaktere</a> -->
+        </nav>
+    </header>
+    <div id="container">
+        <router-outlet></router-outlet>
+    </div>
+
+    <footer>
+        Copyright © SSE.ch
+    </footer>
     `,
     styleUrls:['app/app.component.css'],
     directives: [ROUTER_DIRECTIVES],
