@@ -18,12 +18,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <div>
     <aside>
-    London<br>
-    P1aris<br>
-    Tokyo
+    <tree-view [directories]="directories" 
+        (onSelectFolder)="select($event);" 
+        [selectedDirectory]="selectedDirectory"></tree-view>
     </aside>
 
+    
+    
     <section>
-        <my-markdown-displayer-editor></my-markdown-displayer-editor>
+        <my-markdown-displayer-editor [(markdownText)]="rawMarkdown" (onSave)="saveMarkdown($event);"></my-markdown-displayer-editor>
     </section>
+    
+    
 </div>

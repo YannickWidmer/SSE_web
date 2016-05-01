@@ -1,7 +1,8 @@
 import {Component} from 'angular2/core';
 import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from 'angular2/router';
 
-import {MarkdownService}  from './services/markdown-converter' 
+import {MarkdownService}  from './services/markdown-converter';
+import {DataManagerService} from  './services/data-manager';
 
 import {GeographieComponent} from './components/geographie';
 import {StoryComponent} from './components/story';
@@ -37,7 +38,7 @@ import {PlayerCharactersComponent} from './components/playerCharacters';
     `,
     styleUrls:['app/app.component.css'],
     directives: [ROUTER_DIRECTIVES],
-    providers: [ROUTER_PROVIDERS,MarkdownService]  // Add app wide services here
+    providers: [ROUTER_PROVIDERS,MarkdownService,DataManagerService]  // Add app wide services here
  })
 
 @RouteConfig([

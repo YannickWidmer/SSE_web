@@ -2,7 +2,7 @@
 # Generated files
 sse/app/**/*.js
 sse/app/**/*.map
-*.log
+*.log*
 
 # Folders sustained by scripts
 sse/typings
