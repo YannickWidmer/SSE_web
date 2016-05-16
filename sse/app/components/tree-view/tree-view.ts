@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 
-
 import {Component, Input, Output, EventEmitter} from 'angular2/core'; 
 import {Directory} from './directory'; 
 
@@ -14,8 +13,9 @@ import {Directory} from './directory';
 <ul id="navcontainer">
     <li *ngFor="#dir of directories">
         <a [class.selected]='dir === selectedDirectory'>
-            <i *ngIf="dir.expanded" (click)="dir.toggle()" class="material-icons md-18">expand_more</i>
-            <i *ngIf="!dir.expanded" (click)="dir.toggle()" class="material-icons md-18">chevron_right</i>
+            <i *ngIf="dir.isEmpty()" class="material-icons md-18">stop</i>
+            <i *ngIf="!dir.isEmpty() && dir.expanded" (click)="dir.toggle()" class="material-icons md-18">expand_more</i>
+            <i *ngIf="!dir.isEmpty() && !dir.expanded" (click)="dir.toggle()" class="material-icons md-18">chevron_right</i>
             <span (click)="selectFolder(dir)">
                 {{dir.name}}
             </span>

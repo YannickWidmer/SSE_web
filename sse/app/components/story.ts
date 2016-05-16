@@ -17,44 +17,51 @@
 
 import {Component, OnInit } from 'angular2/core';
 
+import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer';
+import {NewDirectoryDialog,Toggler} from './dialog/new-directory';
 
-import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer' 
-
-import {DataManagerService} from  '../services/data-manager';
+import {StoryDataManagerService} from  '../services/data-manager';
 
 import {Directory} from './tree-view/directory';
 import {TreeView} from './tree-view/tree-view';
 
+
 @Component({
   selector: 'my-story',
-  directives: [MdEditorDisplayerComponent,TreeView],
+  directives: [MdEditorDisplayerComponent,TreeView,NewDirectoryDialog],
   templateUrl: 'app/components/story.html'
 })
 export class StoryComponent implements OnInit {
     private selectedDirectory:Directory;
     private rawMarkdown: string;
-    private _dataManagerService: DataManagerService;
+    private _dataManagerService: StoryDataManagerService;
+    private dialogNewDirToggler:Toggler ={isShowing:false};
     private directories: Array<Directory>;
     
-    constructor(private  _dataManager:DataManagerService) {
+    constructor(private  _dataManager:StoryDataManagerService) {
         this._dataManagerService = _dataManager;
     }
     
     public saveMarkdown(text:string){
         this.rawMarkdown = text;
-        this._dataManagerService.saveStory(this.selectedDirectory.id,text);
+        this._dataManagerService.save(this.selectedDirectory.id,text);
     }
     
     select(dir:Directory){
         this.selectedDirectory = dir;
-        this._dataManagerService.getStory(dir.id).then(mark => this.rawMarkdown = mark);
+        this._dataManagerService.getData(dir.id).then(mark => this.rawMarkdown = mark);
     }
     
-    createFolder(parent:Directory){
-        
+    addFolderDialog(){
+        this.dialogNewDirToggler.isShowing =  true; 
+    }
+    
+    createFolder(name:string){
+        console.log('ew');
+        this._dataManagerService.addFolder(this.selectedDirectory, name).then(dirs => this.directories = [dirs]);
     }
     
     ngOnInit() {
-        this._dataManagerService.getStoryDirectorys().then(dirs =>this.directories = [dirs]);
+        this._dataManagerService.getDirectorys().then(dirs =>this.directories = [dirs]);
     }
 }

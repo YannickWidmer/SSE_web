@@ -9,7 +9,7 @@ h2 {
   padding-top: 0;
 }
 nav a {
-  padding: 5px 10px;
+  padding: 0px 10px;
   text-decoration: none;
   margin-top: 10px;
   display: inline-block;
@@ -26,3 +26,4 @@ nav a:hover {
 nav a.router-link-active {
   color: #039be5;
 }
+

@@ -23,8 +23,15 @@ export class Directory{
         this.expanded = false;
     }
    
+    isEmpty(){
+        return this.directories.length == 0 && this.files.length == 0; 
+    }
     
     toggle(){
         this.expanded = !this.expanded;
     }
+}
+
+export class LocationDirectory extends Directory{
+    locationInParent: string;
 }

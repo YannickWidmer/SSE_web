@@ -15,4 +15,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<h2>Geographie</h2>
+<div>
+    
+    
+    <my-dialog-new-directory 
+        [toggler] ="dialogNewDirToggler"
+        (onResultOk)="createFolder($event)"></my-dialog-new-directory>   
+     
+    
+    <aside>
+    <tree-view [directories]="directories" 
+        (onSelectFolder)="select($event);" 
+        (onCreateSubDir)="addFolderDialog();"
+        [selectedDirectory]="selectedDirectory"></tree-view>
+    </aside>
+
+    <section>
+        <my-drag-map></my-drag-map>
+        <my-markdown-displayer-editor [(markdownText)]="rawMarkdown" (onSave)="saveMarkdown($event);"></my-markdown-displayer-editor>
+    </section>    
+</div>

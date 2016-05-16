@@ -70,6 +70,7 @@ header {
     background-color:#eeeeee;
     text-align:center;
     z-index: 10;
+    left: 0px;
     top: 0px;
 }
 
@@ -115,4 +116,21 @@ footer {
 .material-icons.md-18 { 
     font-size: 18px; 
     padding: 0px;
+}
+
+
+/* Bordell*/
+
+div #map {
+    width: 100%;
+    height: 50px;
+    color: #039be5;
+    resize: both;
+}
+
+#draggable{
+    position: relative;
+    left:50px;
+    top:0px;
+    width:auto;
 }
