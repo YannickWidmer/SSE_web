@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import {Directory, LocationDirectory} from '../components/tree-view/directory';
+import {Directory, LocationDirectory} from '../components/directory/directory';
 
 export var STORYDIRS = 
         new Directory(1,"Main",[

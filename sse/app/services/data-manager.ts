@@ -6,7 +6,7 @@
 
 import {Injectable } from 'angular2/core';
 import {STORYDIRS,STORYFILES,NEXTID, LOCATIONDIRS,LOCATIONFILES} from './mock-data';
-import {Directory} from './../components/tree-view/directory'
+import {Directory} from './../components/directory/directory'
 
 class Base{
     protected dirs:Directory;

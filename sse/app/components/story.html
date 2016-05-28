@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </aside>
 
     <section>
-        <my-markdown-displayer-editor [(markdownText)]="rawMarkdown" (onSave)="saveMarkdown($event);"></my-markdown-displayer-editor>
+        <my-markdown-displayer-editor  *ngIf="selectedDirectory" [(markdownText)]="rawMarkdown" (onSave)="saveMarkdown($event);"></my-markdown-displayer-editor>
     </section>
     
     

@@ -24,15 +24,16 @@ import {MarkdownService}  from '../../services/markdown-converter'
 @Component({
   selector: 'my-markdown-displayer-editor',
   template: `
-	<div>
-          <i *ngIf="!editMode" class="material-icons" style="float: right;"
-                (click)="editMode = true;  edit();">mode_edit</i>  
-          <i *ngIf="editMode" class="material-icons" style="float: right;"
+         <div>
+	 <div class="buttonbar">
+            <i *ngIf="!editMode" class="material-icons"
+                (click)="editMode = true;  edit();">mode_edit</i>
+            <i *ngIf="editMode" class="material-icons"
                 (click)="editMode = false; discard();">clear</i>
-          <i *ngIf="editMode" class="material-icons" style="float: right;"
+            <i *ngIf="editMode" class="material-icons" 
                 (click)="editMode = false; save();">save</i>
-          
-                
+            <p  *ngIf="!raw_temp">Edit to add <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a></p>  
+          </div>    
 	  <div *ngIf="editMode">
             <textarea style="width:100%; resize: vertical;" 
                 [(ngModel)]="raw_temp" (keyup)="updateValue()"></textarea>
@@ -40,7 +41,7 @@ import {MarkdownService}  from '../../services/markdown-converter'
 	  <div style="width:100%;">
             <div innerHtml={{html}}></div>
 	  </div>
-         </div>` 
+            </div>` 
 })
 export class MdEditorDisplayerComponent implements OnInit {
     public html: string;

@@ -22,7 +22,7 @@ import {NewDirectoryDialog,Toggler} from './dialog/new-directory';
 
 import {StoryDataManagerService} from  '../services/data-manager';
 
-import {Directory} from './tree-view/directory';
+import {Directory} from './directory/directory';
 import {TreeView} from './tree-view/tree-view';
 
 

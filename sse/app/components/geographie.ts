@@ -18,13 +18,13 @@
 import {Component, OnInit } from 'angular2/core';
 
 import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer';
-import {DragContainer} from './draggableSVG/draggable-svg';
+import {DragContainer} from './draggableSVG/draggable-map';
 import {NewDirectoryDialog,Toggler} from './dialog/new-directory';
 
 
 import {LocationDataManagerService} from  '../services/data-manager';
 
-import {Directory} from './tree-view/directory';
+import {LocationDirectory} from './directory/directory';
 import {TreeView} from './tree-view/tree-view';
 
 @Component({
@@ -33,11 +33,11 @@ import {TreeView} from './tree-view/tree-view';
   templateUrl: 'app/components/geographie.html'
 })
 export class GeographieComponent implements OnInit {
-    private selectedDirectory:Directory;
+    private selectedDirectory:LocationDirectory;
     private rawMarkdown: string;
     private _dataManagerService: LocationDataManagerService;
     private dialogNewDirToggler:Toggler ={isShowing:false};
-    private directories: Array<Directory>;
+    private directories: Array<LocationDirectory>;
     
     constructor(private  _dataManager:LocationDataManagerService) {
         this._dataManagerService = _dataManager;
@@ -48,7 +48,7 @@ export class GeographieComponent implements OnInit {
         this._dataManagerService.save(this.selectedDirectory.id,text);
     }
     
-    select(dir:Directory){
+    select(dir:LocationDirectory){
         this.selectedDirectory = dir;
         this._dataManagerService.getData(dir.id).then(mark => this.rawMarkdown = mark);
     }
@@ -59,11 +59,11 @@ export class GeographieComponent implements OnInit {
     
     createFolder(name:string){
         console.log('ew');
-        this._dataManagerService.addFolder(this.selectedDirectory, name).then(dirs => this.directories = [dirs]);
+        this._dataManagerService.addFolder(this.selectedDirectory, name).then(dirs => this.directories = <LocationDirectory[]>[dirs]);
     }
     
     ngOnInit() {
-        this._dataManagerService.getDirectorys().then(dirs =>this.directories = [dirs]);
+        this._dataManagerService.getDirectorys().then(dirs =>this.directories = <LocationDirectory[]>[dirs]);
     }
 }
 

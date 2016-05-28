@@ -1,3 +1,4 @@
+
 /* Master Styles */
 h1 {
   color: #369; 
@@ -10,7 +11,8 @@ h2, h3 {
   font-weight: lighter;
 }
 body, input[text], button { 
-  color: #888; 
+  color: #888;
+  min-height:100%;
   font-family: Cambria, Georgia; 
 }
 
@@ -89,13 +91,16 @@ nav{
 
 aside {
     float:left;
-    overflow: auto;
+    width: 20%;
+    min-height: 80vh;
+    overflow-y: auto;
 }
 section {
     width:60%;
     float:left;
     padding: 10px;
     overflow: auto;
+    box-shadow: inset 0px 0px 5px #ddd;
 }
 footer {
     background-color:black;
@@ -118,19 +123,31 @@ footer {
     padding: 0px;
 }
 
+/* Button list edit*/
+.buttonbar{
+    display: -moz-box; 
+    direction: rtl; 
+    width: 100%
+}
+
+.buttonbar p{
+    float:left;
+    margin:5px;
+}
+
+.buttonbar i{
+    float: right;
+}
 
 /* Bordell*/
 
 div #map {
+    position: relative;
     width: 100%;
-    height: 50px;
     color: #039be5;
-    resize: both;
 }
 
 #draggable{
-    position: relative;
-    left:50px;
-    top:0px;
-    width:auto;
+    position: absolute;
+    display:inline-block;
 }

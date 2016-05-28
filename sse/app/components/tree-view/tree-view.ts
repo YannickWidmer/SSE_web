@@ -5,7 +5,7 @@
  */
 
 import {Component, Input, Output, EventEmitter} from 'angular2/core'; 
-import {Directory} from './directory'; 
+import {Directory} from '../directory/directory'; 
 
 @Component({ 
     selector: 'tree-view', 

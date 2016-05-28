@@ -15,83 +15,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-import {Component,ViewChild,ElementRef,HostListener} from 'angular2/core';
+import {Component,Input,Output,EventEmitter,HostListener} from 'angular2/core';
+
+export interface DragMouvement{
+    dx:number;
+    dy:number;
+}
 
 @Component({
     selector: 'my-draggable',
-    template: '<p id="draggable" [style.left]="getLeft()"  [style.top]="getTop()">draggable</p>'
+    template: '<p id="draggable" [style.left]="getLeft()"  [style.top]="getTop()">{{name}}</p>'
 })
 export class DragElement {
-    @ViewChild('canvas') 
-    canvas: ElementRef;
-    private styler:string;
-    private x:number = 70;
-    private y: number = 10;
-    private width:number;
-    private height:number;
 
+    @Input() x:number;
+    @Input() y:number;
+    @Input() name:string;
+    @Input() editMode:boolean;
+    
+    getLeft():string{
+         return this.x+"px";
+    }
+    getTop():string{
+         return this.y+"px";
+    }
+
+    @Output() onDrag: EventEmitter<DragMouvement>= new EventEmitter();
     private last: MouseEvent;
-    private el: HTMLElement;
-    private container:ClientRect;
-
     private mouseDown : boolean = false;
 
     @HostListener('mousedown', ['$event'])
-    onMousedown(event) {
-        console.log("setposition");
-        this.mouseDown = true;
-        this.last = event;
+    onMousedown(event:MouseEvent) {
+        if (this.editMode){
+            event.preventDefault();
+            this.mouseDown = true;
+            this.last = event;
+        }
     }
 
     @HostListener('mouseup', ['$event'])
-    onMouseup(event) {
-        console.log("setposition");
-        this.mouseDown = false;
+    onMouseup(event:MouseEvent) {
+        if(this.editMode){
+            event.preventDefault();
+            this.mouseDown = false;
+        }
     }
 
     @HostListener('mousemove', ['$event'])
     onMousemove(event: MouseEvent) {
-        console.log("setposition");
-        if(this.mouseDown) {
-              this.x +=event.clientX - this.last.clientX;
-              this.y +=event.clientY - this.last.clientY;  
-              this.last = event;
-              this.setPosition();
+        if (this.editMode && this.mouseDown) {
+            event.preventDefault();
+            this.onDrag.emit({dx:event.clientX - this.last.clientX, dy:event.clientY - this.last.clientY})  
+            this.last = event;  
         }
     }
-
-    constructor(elementRef: ElementRef) {
-        this.el = elementRef.nativeElement;
-        this.container = this.el.parentElement.getBoundingClientRect(); 
-        this.width = this.el.offsetWidth;
-        this.height = this.el.offsetHeight;
-    }
-    
-    
-      // Move element, within container if provided
-    setPosition() {
-        console.log("before setposition x:" + this.x + " y: "+ this.y);
-        console.log("width :" + this.width+ " heigth: " + this.height);
-        /*if (this.container) {
-          if (this.x < this.container.left) {
-            this.x = this.container.left;
-          } else if (this.x > this.container.right - this.width) {
-            this.x = this.container.right - this.width;
-          }
-          if (this.y < this.container.top) {
-            this.y = this.container.top;
-          } else if (this.y > this.container.bottom - this.height) {
-            this.y = this.container.bottom - this.height;
-          }
-        }
-        console.log("setposition x:" + this.x + " y: "+ this.y);
-        this.el.style.left = this.x + 'px';*/
-     };
-     
-     getLeft():string{
-         return this.x+"px";
-     }
-     getTop():string{
-         return this.y+"px";
-     }
 }
