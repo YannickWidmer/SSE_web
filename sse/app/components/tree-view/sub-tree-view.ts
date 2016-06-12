@@ -5,23 +5,12 @@
  */
 
 import {Component,OnInit, Input, Output, EventEmitter} from 'angular2/core'; 
-
 import {Directory,File} from '../directory/directory'; 
 
-import {SubTreeView} from './sub-tree-view';
-import {NewDirectoryDialog} from '../dialog/new-directory';
-import {BaseDirectoryManager} from  '../../services/data-manager';
 
 @Component({ 
-    selector: 'tree-view', 
-    template: `
-<my-dialog-new-directory  *ngIf="showDialog"
-        [hasFile] ="hasFiles"
-        (onCreateFile)="createFile($event)"
-        (onCreateDirectory)="createDirectory($event)"
-        (onExit)="showDialog = false" 
-        ></my-dialog-new-directory> 
- 
+    selector: 'sub-tree-view', 
+    template: ` 
 <ul id="navcontainer">
     <li *ngFor="#dir of directories">
         <a [class.selected]='dir === selectedDirectory'>
@@ -35,6 +24,7 @@ import {BaseDirectoryManager} from  '../../services/data-manager';
         </a>
         <div *ngIf="dir.expanded">
             <sub-tree-view [directories]="dir.directories" [selectedDirectory]="selectedDirectory"
+                    [selectedFile]="selectedFile"
                     (onSelectDirectory)="selectDirectory($event)"
                     (onSelectFile)="selectFile($event)"
                     (onOpenDialog)="openDialog($event)"></sub-tree-view>
@@ -50,49 +40,30 @@ import {BaseDirectoryManager} from  '../../services/data-manager';
         </div>
     </li>
 </ul>`, 
-    directives: [SubTreeView,NewDirectoryDialog] 
+    directives: [SubTreeView] 
 }) 
 
-export class TreeView implements OnInit{ 
-    @Input() directoryManager: BaseDirectoryManager;
-    @Input() hasFiles: boolean=false;
+export class SubTreeView{ 
+    @Input() directories: Directory;
     
     @Output() onSelectDirectory: EventEmitter<Directory>= new EventEmitter();
     @Output() onSelectFile: EventEmitter<File>= new EventEmitter();
+    @Output() onOpenDialog: EventEmitter<Directory>= new EventEmitter();
+    
+    @Input() selectedDirectory:Directory;
+    @Input() selectedFile:File;
     
     
-    private showDialog:boolean =false;
-    private directories: Array<Directory>;
-    private selectedDirectory:Directory;
-    private selectedFile:File;
-    
-    ngOnInit() {
-        this.directoryManager.getDirectorys().then(dirs =>this.directories = [dirs]);
-    }
     
     selectDirectory(dir:Directory){
-        this.selectedFile = null;
-        this.selectedDirectory = dir;
         this.onSelectDirectory.emit(dir);
     }
     
     selectFile(file:File){
-        this.selectedDirectory = null;
-        this.selectedFile = file;
         this.onSelectFile.emit(file);
     }
       
     openDialog(dir:Directory){
-        this.showDialog =  true; 
-    }
-    
-    createDirectory(name:string){
-        this.showDialog = false;
-        this.directoryManager.addDirectory(this.selectedDirectory, name).then(dirs => this.directories = [dirs]);
-    }
-    
-    createFile(name:string){
-        this.showDialog = false;
-        this.directoryManager.addFile(this.selectedDirectory, name).then(dirs => this.directories = [dirs]);
+        this.onOpenDialog.emit(dir);
     }
 }

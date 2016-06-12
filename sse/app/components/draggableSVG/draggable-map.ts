@@ -19,6 +19,7 @@
 
 import {Component,OnInit,OnChanges,Input} from 'angular2/core'; 
 
+import {BaseLocationManager} from  '../../services/data-manager';
 import {LocationDirectory} from '../directory/directory';
 import {DragElement,DragMouvement} from './drag-element';
 
@@ -57,11 +58,13 @@ class MapPoints{
         ` 
 }) 
 export class DragContainer implements OnInit, OnChanges{ 
-    @Input() selectedDirectory:LocationDirectory;
+    @Input() selectedId:number;
+    @Input() manager:BaseLocationManager;
+    
+    selectedDirectory:LocationDirectory;
+    
     private imageUrl:string;
-    
     private editMode:boolean =false;
-    
     private map:HTMLElement;
     private img:HTMLImageElement  = new Image();    
     private imageOldUrl:string;
@@ -139,7 +142,6 @@ export class DragContainer implements OnInit, OnChanges{
         this.map = document.getElementById('map');
         this.img.onload = (event => this.imageUrl = this.img.src);
         this.img.onerror = (event => console.log("url error"));  
-        this.imageExists(this.selectedDirectory.imageUrl);
     }
     
     ngOnChanges(){
@@ -147,8 +149,17 @@ export class DragContainer implements OnInit, OnChanges{
             this.discard();
         }
         this.imageUrl = null;
-        this.imageExists(this.selectedDirectory.imageUrl);
         this.editMode = false;
+        console.log("Hello oo eoe oe eoeoeeeoeoeoeoe eoeooe");
+        console.log(this.selectedId);
+        this.manager.getLocation(this.selectedId).then(loc => this.setLocation(loc));
     }  
+    
+    setLocation(loc:LocationDirectory){
+        console.log("Setting")
+        console.log(loc)
+        this.selectedDirectory = loc;
+        this.imageExists(this.selectedDirectory.imageUrl);
+    }
 }
 

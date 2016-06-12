@@ -5,69 +5,106 @@
  */
 
 import {Injectable } from 'angular2/core';
-import {STORYDIRS,STORYFILES,NEXTID, LOCATIONDIRS,LOCATIONFILES} from './mock-data';
-import {Directory} from './../components/directory/directory'
+import {StoryDataManagerMockBackend,LocationDataManagerMockBackend} from './data-mock-backend';
+import {Directory,LocationDirectory} from './../components/directory/directory'
 
-class Base{
-    protected dirs:Directory;
-    protected files;
+export interface BaseDirectoryManager{
+    getDirectorys():Promise<Directory>;
+    // This will be called when a Tree-View is created
+    addDirectory(parent:Directory,name:string):Promise<Directory>;
+    // This will be called when a Folder will be created from a Tree-View. 
+    // The Directories should be in the same state as they where when the methdo is called!!! 
+    addFile(parent:Directory,name:string):Promise<Directory>;
+    // Similar to addFolder
+}
+
+export interface BaseMarkdownManager{
+    saveText(id:number,text:string);
+    getText(id:number):Promise<string>;
+}
+
+export interface BaseLocationManager{
+    getLocation(id:number):Promise<LocationDirectory>;
+    saveLocation(loc:LocationDirectory);
+}
+
+class BaseManagerService implements BaseDirectoryManager, BaseMarkdownManager{
+    manager:StoryDataManagerMockBackend;
+    protected directorys:Directory;
     
-    getDirectorys(){
-        return Promise.resolve(this.dirs);
-    }
-        
-    getData(id:number){
-        return Promise.resolve(this.getDataFile(id));
-    }
-    
-    private getDataFile(id:number){
-        if(this.files[id] != undefined){
-            return this.files[id];
-        }else{
-            return '';
-        }
-    }
-    
-    save(id:number, markdown:string){
-        this.files[id] = markdown;
-    }
-    
-    public addFolder(parent:Directory,name:string){
-        return Promise.resolve(this.addFolderData(parent,name));
-    }
-    
-    private addFolderData(parent:Directory,name:string){
-        for (var key in this.dirs.directories){
-            this.searchParentAddNewFolder(this.dirs.directories[key], parent.id,name);
-        }
-        return this.dirs;
+    public getDirectorys(){
+        return Promise.resolve(this.getDirectorysProm());
     }
     
-    private searchParentAddNewFolder(dir:Directory,parentId:number,name:string){
-        if (dir.id === parentId)
-            dir.directories.push(new Directory(NEXTID(),name));
-        else{
-            for (var key in dir.directories){
-                this.searchParentAddNewFolder(dir.directories[key],parentId,name);
-            }
-        }
+    private getDirectorysProm(){
+        this.directorys = this.manager.getDirectorys();
+        return this.directorys;
+    }
+    
+    public getDescription(id:number){
+        return Promise.resolve(this.manager.getData(id));
+    }
+    
+    public saveHeaderData(dir:Directory){
+        this.manager.saveHeaderData(dir);
+    }
+    
+    public saveDescription(dir:Directory,descr:string){
+        this.manager.save(dir.id,descr);
+    }
+    
+    public addDirectory(parent:Directory,name:string){
+        return Promise.resolve(this.addDirectoryProm(parent,name));
+    }
+    
+    protected addDirectoryProm(parent:Directory,name:string){
+        let newId:number = this.manager.addFolder(parent.id,name);
+        parent.directories.push(new Directory(newId,name));
+        return this.directorys;
+    }
+    
+    public addFile(parent:Directory,name:string){
+            return Promise.resolve({});
+    }
+    
+    public saveText(id:number,text:string){
+        this.manager.save(id,text);
+    }
+    
+    public getText(id:number):Promise<string>{
+        return Promise.resolve(this.manager.getData(id));
+    }
+}
+
+
+@Injectable()
+export class StoryDataManagerService extends BaseManagerService{
+    
+    constructor(){
+        super();
+        this.manager = new StoryDataManagerMockBackend();
     }
 }
 
 @Injectable()
-export class StoryDataManagerService extends Base{
+export class LocationDataManagerService extends BaseManagerService implements BaseLocationManager{
+    
     constructor(){
         super();
-        this.dirs = STORYDIRS;
-        this.files = STORYFILES;
-    }    
-}
-
-@Injectable()
-export class LocationDataManagerService extends Base{
-    constructor(){
-        super();
-        this.dirs = LOCATIONDIRS;
-        this.files = LOCATIONFILES;
-    }    
+        this.manager = new LocationDataManagerMockBackend();
+    }
+    
+    protected addDirectoryProm(parent:Directory,name:string){
+        let newId:number = this.manager.addFolder(parent.id,name);
+        parent.directories.push(new LocationDirectory(newId,name,[],[],name));
+        return this.directorys;
+    } 
+    
+    getLocation(id:number){
+        return Promise.resolve(this.manager.getDirectory(id));
+    }
+    
+    saveLocation(loc:LocationDirectory){
+        // TODO
+    }
 }

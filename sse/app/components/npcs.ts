@@ -20,7 +20,7 @@ import {RouteParams} from 'angular2/router';
 
 @Component({
   selector: 'my-npcs',
-  templateUrl: 'app/component/foes.html'
+  templateUrl: 'app/component/npc.html'
 })
 export class NpcsComponent implements OnInit {
     

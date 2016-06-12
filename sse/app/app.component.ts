@@ -19,10 +19,10 @@ import {PlayerCharactersComponent} from './components/playerCharacters';
     <header>
         <h1>{{title}}</h1>
         <nav>
-           <a [routerLink]="['Geographie']">Geographie</a>
-           <a [routerLink]="['Story']">Geschichte</a>
-           <!--<a [routerLink]="['Items']">Objekte</a>
+           <a [routerLink]="['Geographie']">Geography</a>
+           <a [routerLink]="['Story']">Story</a>
            <a [routerLink]="['Npcs']">NPC</a>
+           <!--<a [routerLink]="['Items']">Objekte</a>
            <a [routerLink]="['Foes']">Gegner</a>
            <a [routerLink]="['Players']">Spieler</a>
            <a [routerLink]="['PlayerCharacters']">Charaktere</a> -->

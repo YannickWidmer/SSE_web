@@ -1,14 +1,10 @@
 
 import {Component, OnInit ,Input, Output, EventEmitter} from 'angular2/core';
 
-export interface Toggler{
-   isShowing:boolean;
-}
-
 @Component({
   selector: 'my-dialog-new-directory',
   template: `
-  <div class="modal-background" *ngIf="toggler.isShowing">
+  <div class="modal-background">
     <div class="modal">
         <p class="modal-title"> enter new Directory's name</p><br/>
         <input [(ngModel)]="directoryName" placeholder="name" />\n\
@@ -21,19 +17,21 @@ export interface Toggler{
 `
 })
     
-export class NewDirectoryDialog implements OnInit {
-    @Input()  toggler:Toggler;
-    @Output() onResultOk: EventEmitter<String> = new EventEmitter();
+export class NewDirectoryDialog{
+    @Input() hasFile:boolean;
+    @Output() onCreateFile: EventEmitter<String> = new EventEmitter();
+    @Output() onCreateDirectory: EventEmitter<String> = new EventEmitter();
+    @Output() onExit: EventEmitter<number> = new EventEmitter();
+    
     private directoryName:string;
-    ngOnInit() {
-    }
+    
     onCancel(){
         this.directoryName ='';
-        this.toggler.isShowing=false;
+        this.onExit.emit(0);
     }
     
     onOk(){
-        this.onResultOk.emit(this.directoryName);
-        this.onCancel();
+        this.onCreateDirectory.emit(this.directoryName);
+         this.directoryName ='';
     }
 }

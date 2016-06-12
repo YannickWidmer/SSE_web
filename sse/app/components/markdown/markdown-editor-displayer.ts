@@ -17,7 +17,7 @@
 
 import {Component, Input,Output,EventEmitter, OnInit,SimpleChange } from 'angular2/core';
 
-
+import {BaseMarkdownManager} from  '../../services/data-manager';
 import {MarkdownService}  from '../../services/markdown-converter' 
 
 
@@ -27,11 +27,11 @@ import {MarkdownService}  from '../../services/markdown-converter'
          <div>
 	 <div class="buttonbar">
             <i *ngIf="!editMode" class="material-icons"
-                (click)="editMode = true;  edit();">mode_edit</i>
+                (click)="edit();">mode_edit</i>
             <i *ngIf="editMode" class="material-icons"
-                (click)="editMode = false; discard();">clear</i>
+                (click)="discard();">clear</i>
             <i *ngIf="editMode" class="material-icons" 
-                (click)="editMode = false; save();">save</i>
+                (click)="save();">save</i>
             <p  *ngIf="!raw_temp">Edit to add <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a></p>  
           </div>    
 	  <div *ngIf="editMode">
@@ -43,19 +43,18 @@ import {MarkdownService}  from '../../services/markdown-converter'
 	  </div>
             </div>` 
 })
-export class MdEditorDisplayerComponent implements OnInit {
-    public html: string;
+export class MdEditorDisplayerComponent {
+    private html: string;
     private raw_temp: string;
+    private markdownText:string;
     private md: MarkdownService;
+    private editMode:boolean;
     
-    @Input() markdownText: string;
-    @Output() onSave: EventEmitter<string> = new EventEmitter();
+    @Input() manager: BaseMarkdownManager;
+    @Input() selectedId: number;
     
     constructor(private _converter: MarkdownService) {
         this.md = _converter;
-    }
-    
-    ngOnInit() {
     }
     
     
@@ -63,20 +62,34 @@ export class MdEditorDisplayerComponent implements OnInit {
         this.html = this._converter.convert(this.raw_temp);
     }
     
+    public edit(){
+        this.editMode = true;
+    }
+       
     public save(){
+        this.editMode = false;
         this.markdownText = this.raw_temp;
-        this.onSave.emit(this.markdownText);
+        this.manager.saveText(this.selectedId,this.markdownText);
     }
     
     public discard(){
+        this.editMode = false;
         this.raw_temp = this.markdownText;
         this.updateValue();
     }
     
     ngOnChanges(changes:{[propName:string]:SimpleChange}){
-        this.raw_temp = this.markdownText;
+        this.editMode = false;
+        this.raw_temp = '';
+        this.markdownText = '';
         this.updateValue();
-         console.log('ngOnChanges - myProp = ' + changes['markdownText'].currentValue);
+        this.manager.getText(this.selectedId).then(raw => this.setValue(raw));
+    }
+    
+    private setValue(text:string) {
+        this.markdownText = text;
+        this.raw_temp = text;
+        this.html = this._converter.convert(this.raw_temp);
     }
     
 }

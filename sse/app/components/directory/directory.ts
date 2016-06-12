@@ -4,10 +4,12 @@
  * and open the template in the editor.
  */
  
-interface File{
+export class File{
     name:string; 
     id:number;
 }
+
+
 
 export class Directory{
     name: string;
@@ -22,7 +24,7 @@ export class Directory{
         this.directories = directories;
         this.expanded = false;
     }
-   
+       
     isEmpty(){
         return this.directories.length == 0 && this.files.length == 0; 
     }
@@ -32,11 +34,12 @@ export class Directory{
     }
 }
 
+
 export class LocationDirectory extends Directory{
     shortName: string;
     imageUrl: string;
-    positionInParentx:number;
     directories: Array<LocationDirectory>;
+    positionInParentx:number;
     positionInParenty:number;
     constructor(id:number,name:string,directories:Array<Directory> = [],files:Array<File> = [],
         shortName: string="",imageUrl: string="",positionInParentx:number=0,positionInParenty:number=0) {

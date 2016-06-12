@@ -17,20 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <div>
-    <my-dialog-new-directory 
-        [toggler] ="dialogNewDirToggler"
-        (onResultOk)="createFolder($event)"></my-dialog-new-directory>   
-     
-    
     <aside>
-    <tree-view [directories]="directories" 
-        (onSelectFolder)="select($event);" 
-        (onCreateSubDir)="addFolderDialog();"
-        [selectedDirectory]="selectedDirectory"></tree-view>
+    <tree-view
+        [directoryManager] = "_dataManagerService" 
+        (onSelectDirectory)="select($event);"></tree-view>
     </aside>
 
     <section>
-        <my-markdown-displayer-editor  *ngIf="selectedDirectory" [(markdownText)]="rawMarkdown" (onSave)="saveMarkdown($event);"></my-markdown-displayer-editor>
+        <my-markdown-displayer-editor *ngIf="selectedDirectoryId" [manager]="_dataManagerService" [selectedId]="selectedDirectoryId"></my-markdown-displayer-editor>
     </section>
     
     
