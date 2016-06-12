@@ -31,7 +31,8 @@ export class DragElement {
     @Input() x:number;
     @Input() y:number;
     @Input() name:string;
-    @Input() editMode:boolean;
+    @Output() onDown:EventEmitter<MouseEvent> = new EventEmitter();
+    @Output() onUp:EventEmitter<number> = new EventEmitter();
     
     getLeft():string{
          return this.x+"px";
@@ -40,33 +41,15 @@ export class DragElement {
          return this.y+"px";
     }
 
-    @Output() onDrag: EventEmitter<DragMouvement>= new EventEmitter();
-    private last: MouseEvent;
-    private mouseDown : boolean = false;
-
     @HostListener('mousedown', ['$event'])
     onMousedown(event:MouseEvent) {
-        if (this.editMode){
-            event.preventDefault();
-            this.mouseDown = true;
-            this.last = event;
-        }
+        event.preventDefault();
+        this.onDown.emit(event);
     }
 
     @HostListener('mouseup', ['$event'])
     onMouseup(event:MouseEvent) {
-        if(this.editMode){
-            event.preventDefault();
-            this.mouseDown = false;
-        }
-    }
-
-    @HostListener('mousemove', ['$event'])
-    onMousemove(event: MouseEvent) {
-        if (this.editMode && this.mouseDown) {
-            event.preventDefault();
-            this.onDrag.emit({dx:event.clientX - this.last.clientX, dy:event.clientY - this.last.clientY})  
-            this.last = event;  
-        }
+        event.preventDefault();
+        this.onUp.emit(0);
     }
 }

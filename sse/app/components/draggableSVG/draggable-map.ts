@@ -17,7 +17,7 @@
 
 
 
-import {Component,OnInit,OnChanges,Input} from 'angular2/core'; 
+import {Component,OnInit,OnChanges,Input,Output,EventEmitter,HostListener} from 'angular2/core'; 
 
 import {BaseLocationManager} from  '../../services/data-manager';
 import {LocationDirectory} from '../directory/directory';
@@ -50,7 +50,8 @@ class MapPoints{
             <my-draggable  *ngFor="#drag of selectedDirectory.directories"
                [x]="getX(drag)" [y]="getY(drag)" 
                [name]="getShortName(drag)" [editMode]="editMode"
-               (onDrag)="onDrag(drag,$event)"    
+               (onDown)="onDown(drag,$event)"  
+               (onUp)="onUp(drag);"
             ></my-draggable>
             </div>
         </div>
@@ -61,6 +62,8 @@ export class DragContainer implements OnInit, OnChanges{
     @Input() selectedId:number;
     @Input() manager:BaseLocationManager;
     
+    @Output() onSelect: EventEmitter<LocationDirectory> = new EventEmitter();
+    
     selectedDirectory:LocationDirectory;
     
     private imageUrl:string;
@@ -68,15 +71,13 @@ export class DragContainer implements OnInit, OnChanges{
     private map:HTMLElement;
     private img:HTMLImageElement  = new Image();    
     private imageOldUrl:string;
+    // Drag
     private oldPositions:Array<MapPoints> = [];
-        
-    imageExists(url:string) {
-        console.log("checking URL:");
-        console.log(url);
-        this.img.src = url;
-        console.log("done");
-    }
-    
+    private last: MouseEvent;
+    private draggedDir:LocationDirectory;
+    private mouseDown : boolean = false;  
+      
+    // Save edit discard
     startEdit(){
         this.imageOldUrl = this.imageUrl;
         this.editMode = true;
@@ -103,9 +104,41 @@ export class DragContainer implements OnInit, OnChanges{
         this.selectedDirectory.imageUrl = this.imageUrl;
     }
     
+    // Drag and such
+    onDown(d:LocationDirectory,m:MouseEvent){
+        if (this.editMode){
+            this.mouseDown = true;
+            this.last = m;
+            this.draggedDir = d;
+        }
+    }
     
+    @HostListener('mousemove', ['$event'])
+    onMousemove(event: MouseEvent) {
+        if (this.editMode && this.mouseDown) {
+            event.preventDefault();
+            this.draggedDir.positionInParentx += (event.clientX - this.last.clientX) * 100 / this.map.offsetWidth;
+            this.draggedDir.positionInParenty += (event.clientY - this.last.clientY) * 100 / this.map.offsetHeight;
+            this.last = event;  
+        }
+    }
+    
+    onUp(d:LocationDirectory){
+        if (this.editMode) {
+            this.mouseDown = false;
+        }else{
+            this.onSelect.emit(d);
+        }
+    }
+    
+    //if child mouseup is not called
+    @HostListener('mouseup', ['$event'])
+    onMouseup(event:MouseEvent) {
+        event.preventDefault();
+        this.mouseDown = false;
+    }
+        
     getX(d:LocationDirectory):number{
-        console.log("getX, mapWidth :" + this.map.offsetWidth);
         if (d.positionInParentx <0){
             d.positionInParentx =0;
         } else if (d.positionInParentx > 100){
@@ -131,35 +164,32 @@ export class DragContainer implements OnInit, OnChanges{
         }
     }
     
-    onDrag(drag:LocationDirectory,ev:DragMouvement){
-        if(this.editMode){
-            drag.positionInParentx += ev.dx * 100 / this.map.offsetWidth;
-            drag.positionInParenty += ev.dy * 100 / this.map.offsetHeight;
-        }
-    }
-    
     ngOnInit(){
         this.map = document.getElementById('map');
         this.img.onload = (event => this.imageUrl = this.img.src);
         this.img.onerror = (event => console.log("url error"));  
     }
     
+    // Setting selected from outside
     ngOnChanges(){
         if (this.editMode){
             this.discard();
         }
         this.imageUrl = null;
         this.editMode = false;
-        console.log("Hello oo eoe oe eoeoeeeoeoeoeoe eoeooe");
-        console.log(this.selectedId);
         this.manager.getLocation(this.selectedId).then(loc => this.setLocation(loc));
     }  
     
     setLocation(loc:LocationDirectory){
-        console.log("Setting")
-        console.log(loc)
         this.selectedDirectory = loc;
         this.imageExists(this.selectedDirectory.imageUrl);
+    }
+    // Check URL before removing old one
+    imageExists(url:string) {
+        console.log("checking URL:");
+        console.log(url);
+        this.img.src = url;
+        console.log("done");
     }
 }
 

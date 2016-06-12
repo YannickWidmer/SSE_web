@@ -19,11 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <aside>
     <tree-view 
         [directoryManager] = "_dataManagerService" 
-        (onSelectDirectory)="selectDirectory($event);"></tree-view>
+        (onSelectDirectory)="selectDirectory($event);"
+        [selectedId]="selectedDirectoryFile"></tree-view>
     </aside>
 
     <section>
-        <my-drag-map *ngIf="selectedDirectoryFile" [selectedId]="selectedDirectoryFile" [manager]="_dataManagerService" ></my-drag-map>
-        <my-markdown-displayer-editor *ngIf="selectedDirectoryFile" [manager]="_dataManagerService" [selectedId]="selectedDirectoryFile"></my-markdown-displayer-editor>
+        <my-drag-map *ngIf="selectedDirectoryFile" (onSelect)="selectDirectory($event);" [selectedId]="selectedDirectoryFile" [manager]="_dataManagerService" ></my-drag-map>
+        <my-markdown-displayer-editor *ngIf="selectedDirectoryFile"  
+            [manager]="_dataManagerService" [selectedId]="selectedDirectoryFile"></my-markdown-displayer-editor>
     </section>    
 </div>

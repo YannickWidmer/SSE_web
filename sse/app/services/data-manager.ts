@@ -16,6 +16,7 @@ export interface BaseDirectoryManager{
     // The Directories should be in the same state as they where when the methdo is called!!! 
     addFile(parent:Directory,name:string):Promise<Directory>;
     // Similar to addFolder
+    getDirectory(id:number):Promise<Directory>;
 }
 
 export interface BaseMarkdownManager{
@@ -55,6 +56,10 @@ class BaseManagerService implements BaseDirectoryManager, BaseMarkdownManager{
     
     public addDirectory(parent:Directory,name:string){
         return Promise.resolve(this.addDirectoryProm(parent,name));
+    }
+    
+    public getDirectory(id:number){
+        return Promise.resolve(this.manager.getDirectory(id));
     }
     
     protected addDirectoryProm(parent:Directory,name:string){

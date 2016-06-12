@@ -39,6 +39,7 @@ export class GeographieComponent {
     }
     
     selectDirectory(dir:Directory){
+        console.log("selecting dir " + dir.name);
         this.selectedDirectoryFile = dir.id;
     }
 }

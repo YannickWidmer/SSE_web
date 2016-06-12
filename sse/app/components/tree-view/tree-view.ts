@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-import {Component,OnInit, Input, Output, EventEmitter} from 'angular2/core'; 
+import {Component,OnInit, Input, Output, EventEmitter, SimpleChange} from 'angular2/core'; 
 
 import {Directory,File} from '../directory/directory'; 
 
@@ -56,6 +56,7 @@ import {BaseDirectoryManager} from  '../../services/data-manager';
 export class TreeView implements OnInit{ 
     @Input() directoryManager: BaseDirectoryManager;
     @Input() hasFiles: boolean=false;
+    @Input() selectedId: number;
     
     @Output() onSelectDirectory: EventEmitter<Directory>= new EventEmitter();
     @Output() onSelectFile: EventEmitter<File>= new EventEmitter();
@@ -94,5 +95,28 @@ export class TreeView implements OnInit{
     createFile(name:string){
         this.showDialog = false;
         this.directoryManager.addFile(this.selectedDirectory, name).then(dirs => this.directories = [dirs]);
+    }
+    
+    ngOnChanges(changes:{[propName:string]:SimpleChange}){
+        console.log("tree view on change");
+        if (this.selectedId && this.selectedDirectory && this.selectedId != this.selectedDirectory.id){
+            this.findOpenAndSelect(this.selectedId, this.directories[0]);
+        }
+    }
+    
+    private findOpenAndSelect(id:number,dir:Directory){
+        console.log("looking for " + id + " in " + dir.name);
+        if (dir.id == id){
+            console.log("found it ");
+            this.selectedDirectory = dir;
+            return true;
+        }
+        for (let d of dir.directories){
+            if(this.findOpenAndSelect(id,d)){
+                dir.expanded = true;
+                return true;
+            }
+        }
+        return false;
     }
 }
