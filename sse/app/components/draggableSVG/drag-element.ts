@@ -17,20 +17,17 @@
  
 import {Component,Input,Output,EventEmitter,HostListener} from 'angular2/core';
 
-export interface DragMouvement{
-    dx:number;
-    dy:number;
-}
 
 @Component({
     selector: 'my-draggable',
-    template: '<p id="draggable" [style.left]="getLeft()"  [style.top]="getTop()">{{name}}</p>'
+    template: '<p id="draggable" [style.cursor]="cursor" [style.left]="getLeft()"  [style.top]="getTop()">{{name}}</p>'
 })
 export class DragElement {
 
     @Input() x:number;
     @Input() y:number;
     @Input() name:string;
+    @Input() cursor:string;
     @Output() onDown:EventEmitter<MouseEvent> = new EventEmitter();
     @Output() onUp:EventEmitter<number> = new EventEmitter();
     

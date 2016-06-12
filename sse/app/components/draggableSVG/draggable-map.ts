@@ -21,7 +21,7 @@ import {Component,OnInit,OnChanges,Input,Output,EventEmitter,HostListener} from 
 
 import {BaseLocationManager} from  '../../services/data-manager';
 import {LocationDirectory} from '../directory/directory';
-import {DragElement,DragMouvement} from './drag-element';
+import {DragElement} from './drag-element';
 
 class MapPoints{
     x:number;
@@ -49,7 +49,7 @@ class MapPoints{
             alt="Map Image" style="width: 100%; height:auto;">
             <my-draggable  *ngFor="#drag of selectedDirectory.directories"
                [x]="getX(drag)" [y]="getY(drag)" 
-               [name]="getShortName(drag)" [editMode]="editMode"
+               [name]="getShortName(drag)" [cursor]="cursor" 
                (onDown)="onDown(drag,$event)"  
                (onUp)="onUp(drag);"
             ></my-draggable>
@@ -66,6 +66,7 @@ export class DragContainer implements OnInit, OnChanges{
     
     selectedDirectory:LocationDirectory;
     
+    private cursor:string = "pointer";
     private imageUrl:string;
     private editMode:boolean =false;
     private map:HTMLElement;
@@ -81,6 +82,7 @@ export class DragContainer implements OnInit, OnChanges{
     startEdit(){
         this.imageOldUrl = this.imageUrl;
         this.editMode = true;
+        this.cursor = "grab";
         let locDir:LocationDirectory;
         for (var dir in this.selectedDirectory.directories){
             locDir = this.selectedDirectory.directories[dir];
@@ -91,6 +93,7 @@ export class DragContainer implements OnInit, OnChanges{
     discard(){
         this.imageUrl = this.imageOldUrl;
         this.editMode = false;
+        this.cursor = "pointer";
         let locDir:LocationDirectory;
         for (var dir in this.selectedDirectory.directories){
             locDir = this.selectedDirectory.directories[dir];
@@ -101,6 +104,7 @@ export class DragContainer implements OnInit, OnChanges{
     
     save(){
         this.editMode = false;
+        this.cursor = "pointer";
         this.selectedDirectory.imageUrl = this.imageUrl;
     }
     
@@ -108,6 +112,7 @@ export class DragContainer implements OnInit, OnChanges{
     onDown(d:LocationDirectory,m:MouseEvent){
         if (this.editMode){
             this.mouseDown = true;
+            this.cursor = "grabbing";
             this.last = m;
             this.draggedDir = d;
         }
@@ -126,6 +131,7 @@ export class DragContainer implements OnInit, OnChanges{
     onUp(d:LocationDirectory){
         if (this.editMode) {
             this.mouseDown = false;
+            this.cursor = "grab";
         }else{
             this.onSelect.emit(d);
         }
@@ -135,7 +141,10 @@ export class DragContainer implements OnInit, OnChanges{
     @HostListener('mouseup', ['$event'])
     onMouseup(event:MouseEvent) {
         event.preventDefault();
-        this.mouseDown = false;
+        if (this.mouseDown){
+            this.cursor = "grab";
+            this.mouseDown = false;
+        }
     }
         
     getX(d:LocationDirectory):number{
