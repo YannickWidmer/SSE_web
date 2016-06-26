@@ -4,13 +4,13 @@
  * and open the template in the editor.
  */
 
-import {Component,OnInit, Input, Output, EventEmitter, SimpleChange} from 'angular2/core'; 
+import {Component,OnInit, Input, Output, EventEmitter, SimpleChange} from '@angular/core'; 
 
-import {Directory,File} from '../directory/directory'; 
+import {Directory,File} from '../../services/directory/directory'; 
 
 import {SubTreeView} from './sub-tree-view';
 import {NewDirectoryDialog} from '../dialog/new-directory';
-import {BaseDirectoryManager} from  '../../services/data-manager';
+import {BaseDirectoryManager,FileType} from  '../../services/data-manager';
 
 @Component({ 
     selector: 'tree-view', 
@@ -23,7 +23,7 @@ import {BaseDirectoryManager} from  '../../services/data-manager';
         ></my-dialog-new-directory> 
  
 <ul id="navcontainer">
-    <li *ngFor="#dir of directories">
+    <li *ngFor="let dir of directories">
         <a [class.selected]='dir === selectedDirectory'>
             <i *ngIf="dir.isEmpty()" class="material-icons md-18">stop</i>
             <i *ngIf="!dir.isEmpty() && dir.expanded" (click)="dir.toggle()" class="material-icons md-18">expand_more</i>
@@ -39,7 +39,7 @@ import {BaseDirectoryManager} from  '../../services/data-manager';
                     (onSelectFile)="selectFile($event)"
                     (onOpenDialog)="openDialog($event)"></sub-tree-view>
             <ul>
-                <li *ngFor="#file of dir.files" (onSelectFile)="selectFile(file.id)">
+                <li *ngFor="let file of dir.files" (onSelectFile)="selectFile(file.id)">
                     <a [class.selected]='file === selectedFile'>
                         <span>
                             {{file.name}}
@@ -58,8 +58,8 @@ export class TreeView implements OnInit{
     @Input() hasFiles: boolean=false;
     @Input() selectedId: number;
     
-    @Output() onSelectDirectory: EventEmitter<Directory>= new EventEmitter();
-    @Output() onSelectFile: EventEmitter<File>= new EventEmitter();
+    @Output() onSelectDirectory: EventEmitter<Directory>= new EventEmitter<Directory>();
+    @Output() onSelectFile: EventEmitter<File>= new EventEmitter<File>();
     
     
     private showDialog:boolean =false;
@@ -74,12 +74,14 @@ export class TreeView implements OnInit{
     selectDirectory(dir:Directory){
         this.selectedFile = null;
         this.selectedDirectory = dir;
+        this.directoryManager.setFileType(FileType.DIRECTORY);
         this.onSelectDirectory.emit(dir);
     }
     
     selectFile(file:File){
         this.selectedDirectory = null;
         this.selectedFile = file;
+        this.directoryManager.setFileType(FileType.FILE);
         this.onSelectFile.emit(file);
     }
       
@@ -98,7 +100,6 @@ export class TreeView implements OnInit{
     }
     
     ngOnChanges(changes:{[propName:string]:SimpleChange}){
-        console.log("tree view on change");
         if (this.selectedId && this.selectedDirectory && this.selectedId != this.selectedDirectory.id){
             this.findOpenAndSelect(this.selectedId, this.directories[0]);
         }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input,Output,EventEmitter, OnInit,SimpleChange } from 'angular2/core';
+import {Component, Input,Output,EventEmitter, OnInit,SimpleChange } from '@angular/core';
 
 import {BaseMarkdownManager} from  '../../services/data-manager';
 import {MarkdownService}  from '../../services/markdown-converter' 

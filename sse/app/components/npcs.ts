@@ -15,22 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnInit } from 'angular2/core';
-import {RouteParams} from 'angular2/router';
+import {Component} from '@angular/core';
+import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer';
+
+import {Directory} from '../services/directory/directory';
+import {NPCDataManagerService} from  '../services/data-manager';
+
+import {TreeView} from './tree-view/tree-view';
 
 @Component({
   selector: 'my-npcs',
+  directives: [MdEditorDisplayerComponent,TreeView],
   templateUrl: 'app/component/npc.html'
 })
-export class NpcsComponent implements OnInit {
+export class NpcsComponent  {
+    private _dataManagerService: NPCDataManagerService;
+    private selectedDirectoryId:number;
     
-    constructor(
-         private _routeParams: RouteParams) {
+    constructor(private  _dataManager:NPCDataManagerService) {
+        this._dataManagerService = _dataManager;
     }
     
-    ngOnInit() {
-        //let id = +this._routeParams.get('id');
-        //this._heroService.getHeroesSlowly().then(heroes => this.heroes = heroes);
+    select(dir:Directory){
+        this.selectedDirectoryId = dir.id;
     }
 }
 

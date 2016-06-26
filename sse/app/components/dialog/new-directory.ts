@@ -1,5 +1,5 @@
 
-import {Component, OnInit ,Input, Output, EventEmitter} from 'angular2/core';
+import {Component, OnInit ,Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'my-dialog-new-directory',
@@ -19,9 +19,9 @@ import {Component, OnInit ,Input, Output, EventEmitter} from 'angular2/core';
     
 export class NewDirectoryDialog{
     @Input() hasFile:boolean;
-    @Output() onCreateFile: EventEmitter<String> = new EventEmitter();
-    @Output() onCreateDirectory: EventEmitter<String> = new EventEmitter();
-    @Output() onExit: EventEmitter<number> = new EventEmitter();
+    @Output() onCreateFile: EventEmitter<String> = new EventEmitter<String>();
+    @Output() onCreateDirectory: EventEmitter<String> = new EventEmitter<String>();
+    @Output() onExit: EventEmitter<number> = new EventEmitter<number>();
     
     private directoryName:string;
     

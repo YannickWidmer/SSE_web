@@ -17,10 +17,10 @@
 
 
 
-import {Component,OnInit,OnChanges,Input,Output,EventEmitter,HostListener} from 'angular2/core'; 
+import {Component,OnInit,OnChanges,Input,Output,EventEmitter,HostListener} from '@angular/core'; 
 
 import {BaseLocationManager} from  '../../services/data-manager';
-import {LocationDirectory} from '../directory/directory';
+import {LocationDirectory} from '../../services/directory/directory';
 import {DragElement} from './drag-element';
 
 class MapPoints{
@@ -47,7 +47,7 @@ class MapPoints{
             <div  *ngIf="imageUrl">
             <img src="{{imageUrl}}" 
             alt="Map Image" style="width: 100%; height:auto;">
-            <my-draggable  *ngFor="#drag of selectedDirectory.directories"
+            <my-draggable  *ngFor="let drag of selectedDirectory.directories"
                [x]="getX(drag)" [y]="getY(drag)" 
                [name]="getShortName(drag)" [cursor]="cursor" 
                (onDown)="onDown(drag,$event)"  
@@ -62,7 +62,7 @@ export class DragContainer implements OnInit, OnChanges{
     @Input() selectedId:number;
     @Input() manager:BaseLocationManager;
     
-    @Output() onSelect: EventEmitter<LocationDirectory> = new EventEmitter();
+    @Output() onSelect: EventEmitter<LocationDirectory> = new EventEmitter<LocationDirectory>();
     
     selectedDirectory:LocationDirectory;
     
@@ -162,7 +162,7 @@ export class DragContainer implements OnInit, OnChanges{
         } else if (d.positionInParenty > 100){
             d.positionInParenty = 100;
         }
-        return d.positionInParenty * this.map.offsetWidth / 100;
+        return d.positionInParenty * this.map.offsetHeight / 100;
     }
     
     getShortName(d:LocationDirectory):string{

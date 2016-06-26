@@ -15,14 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Injectable } from 'angular2/core';
-import {STORYDIRS,STORYFILES,NEXTID, LOCATIONDIRS,LOCATIONFILES} from './mock-data';
-import {Directory} from './../components/directory/directory'
+import {Injectable } from '@angular/core';
+import {STORYDIRS,STORY_TEXT,NEXTID, LOCATIONDIRS,LOCATION_TEXT, NPCDIRS,NPC_DIR_TEXT,NPC_FILE_TEXT} from './mock-data';
+import {Directory} from './directory/directory'
 
 
 export class BaseDataManagerMockBackend{
     protected dirs:Directory;
-    protected files;
+    protected fileTexts:string[];
+    protected directoryTexts:string[];
     
     getDirectorys(){
         return this.dirs;
@@ -48,30 +49,44 @@ export class BaseDataManagerMockBackend{
         }
         return null;
     }
-        
-    getData(id:number){
-        return this.getDataFile(id);
+    
+    
+    getDirectoryText(id:number){
+        return this.getDataFile(id,this.directoryTexts);
     }
     
-    private getDataFile(id:number){
-        if(this.files[id] != undefined){
-            return this.files[id];
+    getFileText(id:number){
+        return this.getDataFile(id,this.fileTexts);
+    }
+    
+    private getDataFile(id:number,texts:string[]){
+        if(texts != undefined && texts[id] != undefined){
+            return texts[id];
         }else{
             return '';
         }
     }
-    
-    saveHeaderData(dir:Directory){
-        // TODO when Backend is ready
+        
+    saveDirectoryText(id:number, markdown:string){
+        if (this.directoryTexts){
+            this.directoryTexts[id] = markdown;
+        }
     }
     
-    save(id:number, markdown:string){
-        this.files[id] = markdown;
+    saveFileText(id:number, markdown:string){
+        if (this.fileTexts){
+            this.fileTexts[id] = markdown;
+        }
     }
+
     
     public addFolder(parentId:number,name:string){
         return NEXTID();
-    }     
+    }    
+    
+    public addFile(parentId:number,name:string){
+        return NEXTID();
+    } 
 }
 
 @Injectable()
@@ -79,7 +94,7 @@ export class StoryDataManagerMockBackend extends BaseDataManagerMockBackend{
     constructor(){
         super();
         this.dirs = STORYDIRS;
-        this.files = STORYFILES;
+        this.directoryTexts = STORY_TEXT;
     }    
 }
 
@@ -88,6 +103,16 @@ export class LocationDataManagerMockBackend extends BaseDataManagerMockBackend{
     constructor(){
         super();
         this.dirs = LOCATIONDIRS;
-        this.files = LOCATIONFILES;
+        this.directoryTexts = LOCATION_TEXT;
+    }    
+}
+
+@Injectable()
+export class NPCDataManagerMockBackend extends BaseDataManagerMockBackend{
+    constructor(){
+        super();
+        this.dirs = NPCDIRS;
+        this.directoryTexts = NPC_DIR_TEXT;
+        this.fileTexts = NPC_FILE_TEXT;
     }    
 }

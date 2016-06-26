@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-import {Component,Input,Output,EventEmitter,HostListener} from 'angular2/core';
+import {Component,Input,Output,EventEmitter,HostListener} from '@angular/core';
 
 
 @Component({
@@ -28,8 +28,8 @@ export class DragElement {
     @Input() y:number;
     @Input() name:string;
     @Input() cursor:string;
-    @Output() onDown:EventEmitter<MouseEvent> = new EventEmitter();
-    @Output() onUp:EventEmitter<number> = new EventEmitter();
+    @Output() onDown:EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
+    @Output() onUp:EventEmitter<number> = new EventEmitter<number>();
     
     getLeft():string{
          return this.x+"px";

@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 
 import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer';
 import {DragContainer} from './draggableSVG/draggable-map';
 
 import {LocationDataManagerService} from  '../services/data-manager';
-import {Directory} from './directory/directory';
+import {Directory} from '../services/directory/directory';
 import {TreeView} from './tree-view/tree-view';
 
 @Component({

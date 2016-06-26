@@ -15,23 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component } from 'angular2/core';
+import {Component } from '@angular/core';
 
 import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer';
-import {NewDirectoryDialog} from './dialog/new-directory';
 
 import {StoryDataManagerService} from  '../services/data-manager';
 
-import {Directory} from './directory/directory';
+import {Directory} from '../services/directory/directory';
 import {TreeView} from './tree-view/tree-view';
 
 
 @Component({
   selector: 'my-story',
-  directives: [MdEditorDisplayerComponent,TreeView,NewDirectoryDialog],
+  directives: [MdEditorDisplayerComponent,TreeView],
   templateUrl: 'app/components/story.html'
 })
-export class StoryComponent  {
+export class StoryComponent{
     private selectedDirectoryId:number;
     private _dataManagerService: StoryDataManagerService;
    

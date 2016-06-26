@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnInit } from 'angular2/core';
-import {RouteParams} from 'angular2/router';
+import {Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'my-player-characters',
@@ -24,9 +23,6 @@ import {RouteParams} from 'angular2/router';
 })
 export class FoesComponent implements OnInit {
     
-    constructor(
-         private _routeParams: RouteParams) {
-    }
     
     ngOnInit() {
         //let id = +this._routeParams.get('id');

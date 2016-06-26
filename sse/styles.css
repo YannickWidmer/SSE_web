@@ -24,44 +24,55 @@ span,i{
 /* LIST */
 #navcontainer ul
 {
-margin-left: 1em;
+margin-left: 0.3em;
 padding: 0;
 list-style-type: none;
+
 }
 
 #navcontainer li{
     list-style: none;
 }
 
+#navcontainer li:first-child a:after {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: -8px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #444;
+}
+
 #navcontainer a
 {
 display: block;
 cursor: pointer;
-color: #FFF;
-background-color: #036;
+background-color: #EEE;
 width: 9em;
 padding: 3px 12px 3px 8px;
 text-decoration: none;
-border-bottom: 1px solid #fff;
-font-weight: bold;
 }
 
 #navcontainer a.selected
 {
 color: #000;
-background-color: #006633;
+background-color: #bfbfbf;
 }
 
 #navcontainer a:hover
 {
-background-color: #369;
-color: #FFF;
+color: #607D8B;
+  background-color: #DDD;
+  left: .1em;
 }
 
 #navcontainer a.selected:hover
 {
-color: #000;
-background-color: #009933;
+background-color: #BBD8DC;
+  color: white;
 }
 
 

@@ -4,15 +4,15 @@
  * and open the template in the editor.
  */
 
-import {Component,OnInit, Input, Output, EventEmitter} from 'angular2/core'; 
-import {Directory,File} from '../directory/directory'; 
+import {Component,OnInit, Input, Output, EventEmitter} from '@angular/core'; 
+import {Directory,File} from '../../services/directory/directory'; 
 
 
 @Component({ 
     selector: 'sub-tree-view', 
     template: ` 
 <ul id="navcontainer">
-    <li *ngFor="#dir of directories">
+    <li *ngFor="let dir of directories">
         <a [class.selected]='dir === selectedDirectory'>
             <i *ngIf="dir.isEmpty()" class="material-icons md-18">stop</i>
             <i *ngIf="!dir.isEmpty() && dir.expanded" (click)="dir.toggle()" class="material-icons md-18">expand_more</i>
@@ -29,7 +29,7 @@ import {Directory,File} from '../directory/directory';
                     (onSelectFile)="selectFile($event)"
                     (onOpenDialog)="openDialog($event)"></sub-tree-view>
             <ul>
-                <li *ngFor="#file of dir.files" (onSelectFile)="selectFile(file.id)">
+                <li *ngFor="let file of dir.files" (onSelectFile)="selectFile(file.id)">
                     <a [class.selected]='file === selectedFile'>
                         <span>
                             {{file.name}}
@@ -46,9 +46,9 @@ import {Directory,File} from '../directory/directory';
 export class SubTreeView{ 
     @Input() directories: Directory;
     
-    @Output() onSelectDirectory: EventEmitter<Directory>= new EventEmitter();
-    @Output() onSelectFile: EventEmitter<File>= new EventEmitter();
-    @Output() onOpenDialog: EventEmitter<Directory>= new EventEmitter();
+    @Output() onSelectDirectory: EventEmitter<Directory>= new EventEmitter<Directory>();
+    @Output() onSelectFile: EventEmitter<File>= new EventEmitter<File>();
+    @Output() onOpenDialog: EventEmitter<Directory>= new EventEmitter<Directory>();
     
     @Input() selectedDirectory:Directory;
     @Input() selectedFile:File;

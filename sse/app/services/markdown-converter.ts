@@ -15,10 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from 'angular2/core';
-
-
-import marked from 'marked';
+import {Injectable} from '@angular/core';
+import * as marked from 'marked';
 
 
 interface IMarkdownConfig {
@@ -44,7 +42,6 @@ export class MarkdownService {
     if(!markdown) {
       return '';
     }
-    //return "hallo" + markdown;
     return this.md.parse(markdown);
   }
 
