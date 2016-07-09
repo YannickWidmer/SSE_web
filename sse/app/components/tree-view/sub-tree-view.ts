@@ -5,31 +5,37 @@
  */
 
 import {Component,OnInit, Input, Output, EventEmitter} from '@angular/core'; 
-import {Directory,File} from '../../services/directory/directory'; 
+import {myDirectory,myFile} from '../../services/directory/directory'; 
 
 
 @Component({ 
     selector: 'sub-tree-view', 
     template: ` 
 <ul id="navcontainer">
-    <li *ngFor="let dir of directories">
-        <a [class.selected]='dir === selectedDirectory'>
-            <i *ngIf="dir.isEmpty()" class="material-icons md-18">stop</i>
-            <i *ngIf="!dir.isEmpty() && dir.expanded" (click)="dir.toggle()" class="material-icons md-18">expand_more</i>
-            <i *ngIf="!dir.isEmpty() && !dir.expanded" (click)="dir.toggle()" class="material-icons md-18">chevron_right</i>
-            <span (click)="selectDirectory(dir)">
-                {{dir.name}}
+    <li>
+        <a [class.selected]='directory === selectedDirectory'  (click)="selectDirectory(directory)">
+            <i *ngIf="directory.isEmpty()" class="material-icons md-18">stop</i>
+            <i *ngIf="!directory.isEmpty() && directory.expanded" 
+                (click)="directory.toggle()" class="material-icons md-18">expand_more</i>
+            <i *ngIf="!directory.isEmpty() && !directory.expanded" 
+                (click)="directory.toggle()" class="material-icons md-18">chevron_right</i>
+            <span>
+                {{directory.name}}
             </span>
-            <i *ngIf="dir === selectedDirectory" class="material-icons md-18" (click)="openDialog(dir)" style="float:right;">add</i>
+            <i *ngIf="directory === selectedDirectory" 
+            class="material-icons md-18" (click)="openDialog(directory)" style="float:right;">add</i>
         </a>
-        <div *ngIf="dir.expanded">
-            <sub-tree-view [directories]="dir.directories" [selectedDirectory]="selectedDirectory"
-                    [selectedFile]="selectedFile"
-                    (onSelectDirectory)="selectDirectory($event)"
-                    (onSelectFile)="selectFile($event)"
-                    (onOpenDialog)="openDialog($event)"></sub-tree-view>
+        <div *ngIf="directory.expanded">
+            <div *ngFor="let dir of directory.directories" >
+                <sub-tree-view 
+                        [directory]="dir" [selectedDirectory]="selectedDirectory"
+                        [selectedFile]="selectedFile"
+                        (onSelectDirectory)="selectDirectory($event)"
+                        (onSelectFile)="selectFile($event)"
+                        (onOpenDialog)="openDialog($event)"></sub-tree-view>
+            </div>
             <ul>
-                <li *ngFor="let file of dir.files" (onSelectFile)="selectFile(file.id)">
+                <li *ngFor="let file of directory.files" (click)="selectFile(file)">
                     <a [class.selected]='file === selectedFile'>
                         <span>
                             {{file.name}}
@@ -43,27 +49,43 @@ import {Directory,File} from '../../services/directory/directory';
     directives: [SubTreeView] 
 }) 
 
+
 export class SubTreeView{ 
-    @Input() directories: Directory;
+    @Input() directory: myDirectory;
     
-    @Output() onSelectDirectory: EventEmitter<Directory>= new EventEmitter<Directory>();
-    @Output() onSelectFile: EventEmitter<File>= new EventEmitter<File>();
-    @Output() onOpenDialog: EventEmitter<Directory>= new EventEmitter<Directory>();
+    @Output() onSelectDirectory: EventEmitter<myDirectory>= new EventEmitter<myDirectory>();
+    @Output() onSelectFile: EventEmitter<myFile>= new EventEmitter<myFile>();
+    @Output() onOpenDialog: EventEmitter<myDirectory>= new EventEmitter<myDirectory>();
     
-    @Input() selectedDirectory:Directory;
-    @Input() selectedFile:File;
+    @Input() selectedDirectory:myDirectory;
+    @Input() selectedFile:myFile;
     
     
     
-    selectDirectory(dir:Directory){
+    selectDirectory(dir:myDirectory){
         this.onSelectDirectory.emit(dir);
     }
     
-    selectFile(file:File){
+    selectFile(file:myFile){
         this.onSelectFile.emit(file);
     }
       
-    openDialog(dir:Directory){
+    openDialog(dir:myDirectory){
         this.onOpenDialog.emit(dir);
     }
+
+    // didn't work without it anymore
+    isEmpty(dir:myDirectory):boolean{
+        return dir.isEmpty();
+    }
+
+    isExpanded(dir:myDirectory):boolean{
+        return dir.expanded;
+    }
+
+    toggle(dir:myDirectory):void{
+        
+        dir.toggle();
+    }
+
 }

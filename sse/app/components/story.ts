@@ -21,7 +21,7 @@ import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer'
 
 import {StoryDataManagerService} from  '../services/data-manager';
 
-import {Directory} from '../services/directory/directory';
+import {myDirectory} from '../services/directory/directory';
 import {TreeView} from './tree-view/tree-view';
 
 
@@ -39,7 +39,7 @@ export class StoryComponent{
         this._dataManagerService = _dataManager;
     }
         
-    select(dir:Directory){
+    select(dir:myDirectory){
         this.selectedDirectoryId = dir.id;
     }
 }

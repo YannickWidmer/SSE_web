@@ -21,7 +21,7 @@ import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer'
 import {DragContainer} from './draggableSVG/draggable-map';
 
 import {LocationDataManagerService} from  '../services/data-manager';
-import {Directory} from '../services/directory/directory';
+import {myDirectory} from '../services/directory/directory';
 import {TreeView} from './tree-view/tree-view';
 
 @Component({
@@ -38,7 +38,7 @@ export class GeographieComponent {
         this._dataManagerService = _dataManager;
     }
     
-    selectDirectory(dir:Directory){
+    selectDirectory(dir:myDirectory){
         console.log("selecting dir " + dir.name);
         this.selectedDirectoryFile = dir.id;
     }

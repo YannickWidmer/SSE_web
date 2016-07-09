@@ -4,20 +4,20 @@
  * and open the template in the editor.
  */
  
-export class File{
+export class myFile{
     name:string; 
     id:number;
 }
 
 
 
-export class Directory{
+export class myDirectory{
     name: string;
     id:number;
-    directories: Array<Directory>;
-    files: Array<File>;
+    directories: Array<myDirectory>;
+    files: Array<myFile>;
     expanded:boolean;
-    constructor(id:number,name:string,directories:Array<Directory> = [],files:Array<File> = []) {
+    constructor(id:number,name:string,directories:Array<myDirectory> = [],files:Array<myFile> = []) {
         this.name = name;
         this.id = id;
         this.files = files;
@@ -25,7 +25,7 @@ export class Directory{
         this.expanded = false;
     }
        
-    isEmpty(){
+    public isEmpty(){
         return this.directories.length == 0 && this.files.length == 0; 
     }
     
@@ -35,13 +35,13 @@ export class Directory{
 }
 
 
-export class LocationDirectory extends Directory{
+export class LocationDirectory extends myDirectory{
     shortName: string;
     imageUrl: string;
     directories: Array<LocationDirectory>;
     positionInParentx:number;
     positionInParenty:number;
-    constructor(id:number,name:string,directories:Array<Directory> = [],files:Array<File> = [],
+    constructor(id:number,name:string,directories:Array<myDirectory> = [],files:Array<myFile> = [],
         shortName: string="",imageUrl: string="",positionInParentx:number=0,positionInParenty:number=0) {
         super(id,name,directories,files);
         if(shortName!==""){

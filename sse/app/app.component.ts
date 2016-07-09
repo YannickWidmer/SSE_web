@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 
 import {MarkdownService}  from './services/markdown-converter';
-import {StoryDataManagerService,LocationDataManagerService} from  './services/data-manager';
+import {StoryDataManagerService,LocationDataManagerService, NPCDataManagerService} from  './services/data-manager';
 
 
 
@@ -34,7 +34,8 @@ import {StoryDataManagerService,LocationDataManagerService} from  './services/da
     `,
     styleUrls:['app/app.component.css'],
     directives: [ROUTER_DIRECTIVES],
-    providers: [MarkdownService,StoryDataManagerService,LocationDataManagerService]  // Add app wide services here
+    providers: [MarkdownService,StoryDataManagerService,LocationDataManagerService,
+    NPCDataManagerService]  // Add app wide services here
  })
 
 

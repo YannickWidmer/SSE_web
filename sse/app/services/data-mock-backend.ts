@@ -17,26 +17,26 @@
 
 import {Injectable } from '@angular/core';
 import {STORYDIRS,STORY_TEXT,NEXTID, LOCATIONDIRS,LOCATION_TEXT, NPCDIRS,NPC_DIR_TEXT,NPC_FILE_TEXT} from './mock-data';
-import {Directory} from './directory/directory'
+import {myDirectory} from './directory/directory'
 
 
 export class BaseDataManagerMockBackend{
-    protected dirs:Directory;
+    protected dir:myDirectory;
     protected fileTexts:string[];
     protected directoryTexts:string[];
     
-    getDirectorys(){
-        return this.dirs;
+    getRootDirectory(){
+        return this.dir;
     }
     
     getDirectory(id:number){
-        if(this.dirs.id == id){
-            return this.dirs;
+        if(this.dir.id == id){
+            return this.dir;
         }
-        return this.getDirectoryIn(id, this.dirs);
+        return this.getDirectoryIn(id, this.dir);
     }
     
-    private getDirectoryIn(id:number, dir:Directory){
+    private getDirectoryIn(id:number, dir:myDirectory){
         
         for (let d of dir.directories){
             if(d.id == id ){
@@ -93,7 +93,7 @@ export class BaseDataManagerMockBackend{
 export class StoryDataManagerMockBackend extends BaseDataManagerMockBackend{
     constructor(){
         super();
-        this.dirs = STORYDIRS;
+        this.dir = STORYDIRS;
         this.directoryTexts = STORY_TEXT;
     }    
 }
@@ -102,7 +102,7 @@ export class StoryDataManagerMockBackend extends BaseDataManagerMockBackend{
 export class LocationDataManagerMockBackend extends BaseDataManagerMockBackend{
     constructor(){
         super();
-        this.dirs = LOCATIONDIRS;
+        this.dir = LOCATIONDIRS;
         this.directoryTexts = LOCATION_TEXT;
     }    
 }
@@ -111,7 +111,7 @@ export class LocationDataManagerMockBackend extends BaseDataManagerMockBackend{
 export class NPCDataManagerMockBackend extends BaseDataManagerMockBackend{
     constructor(){
         super();
-        this.dirs = NPCDIRS;
+        this.dir = NPCDIRS;
         this.directoryTexts = NPC_DIR_TEXT;
         this.fileTexts = NPC_FILE_TEXT;
     }    

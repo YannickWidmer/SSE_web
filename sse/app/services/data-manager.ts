@@ -7,19 +7,19 @@
 
 import {Injectable } from '@angular/core';
 import {StoryDataManagerMockBackend,NPCDataManagerMockBackend,LocationDataManagerMockBackend} from './data-mock-backend';
-import {Directory,LocationDirectory} from './directory/directory'
+import {myDirectory,LocationDirectory} from './directory/directory'
        
 export enum FileType{
     FILE,DIRECTORY
 }   
 
 export interface BaseDirectoryManager{
-    getDirectorys():Promise<Directory>;
+    getDirectory():Promise<myDirectory>;
     // This will be called when a Tree-View is created
-    addDirectory(parent:Directory,name:string):Promise<Directory>;
+    addDirectory(parent:myDirectory,name:string):Promise<myDirectory>;
     // This will be called when a Folder will be created from a Tree-View. 
     // The Directories should be in the same state as they where when the methdo is called!!! 
-    addFile(parent:Directory,name:string):Promise<Directory>;
+    addFile(parent:myDirectory,name:string):Promise<myDirectory>;
     // Similar to addFolder
     setFileType(typ:FileType);
 }
@@ -38,18 +38,18 @@ export interface BaseLocationManager{
 class BaseManagerService implements BaseDirectoryManager, BaseMarkdownManager{
     manager:StoryDataManagerMockBackend;
     fileType:FileType = FileType.DIRECTORY;
-    protected directorys:Directory;
+    protected directory:myDirectory;
     
-    public getDirectorys(){
-        return Promise.resolve(this.getDirectorysProm());
+    public getDirectory():Promise<myDirectory>{
+        return Promise.resolve(this.getDirectoryProm());
     }
     
-    private getDirectorysProm(){
-        this.directorys = this.manager.getDirectorys();
-        return this.directorys;
+    private getDirectoryProm():myDirectory{
+        this.directory = this.manager.getRootDirectory();
+        return this.directory;
     }
     
-    public getText(id:number){
+    public getText(id:number):Promise<string>{
         if (this.fileType == FileType.DIRECTORY){
             return Promise.resolve(this.manager.getDirectoryText(id));
         }else{
@@ -65,17 +65,17 @@ class BaseManagerService implements BaseDirectoryManager, BaseMarkdownManager{
         }
     }
         
-    public addDirectory(parent:Directory,name:string){
+    public addDirectory(parent:myDirectory,name:string){
         return Promise.resolve(this.addDirectoryProm(parent,name));
     }
     
-    protected addDirectoryProm(parent:Directory,name:string){
+    protected addDirectoryProm(parent:myDirectory,name:string){
         let newId:number = this.manager.addFolder(parent.id,name);
-        parent.directories.push(new Directory(newId,name));
-        return this.directorys;
+        parent.directories.push(new myDirectory(newId,name));
+        return this.directory;
     }
     
-    public addFile(parent:Directory,name:string){
+    public addFile(parent:myDirectory,name:string){
             return Promise.resolve({});
     }
     
@@ -111,10 +111,10 @@ export class LocationDataManagerService extends BaseManagerService implements Ba
         this.manager = new LocationDataManagerMockBackend();
     }
     
-    protected addDirectoryProm(parent:Directory,name:string){
+    protected addDirectoryProm(parent:myDirectory,name:string){
         let newId:number = this.manager.addFolder(parent.id,name);
         parent.directories.push(new LocationDirectory(newId,name,[],[],name));
-        return this.directorys;
+        return this.directory;
     } 
     
     getLocation(id:number){

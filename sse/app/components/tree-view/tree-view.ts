@@ -6,7 +6,7 @@
 
 import {Component,OnInit, Input, Output, EventEmitter, SimpleChange} from '@angular/core'; 
 
-import {Directory,File} from '../../services/directory/directory'; 
+import {myDirectory,myFile} from '../../services/directory/directory'; 
 
 import {SubTreeView} from './sub-tree-view';
 import {NewDirectoryDialog} from '../dialog/new-directory';
@@ -21,35 +21,13 @@ import {BaseDirectoryManager,FileType} from  '../../services/data-manager';
         (onCreateDirectory)="createDirectory($event)"
         (onExit)="showDialog = false" 
         ></my-dialog-new-directory> 
- 
-<ul id="navcontainer">
-    <li *ngFor="let dir of directories">
-        <a [class.selected]='dir === selectedDirectory'>
-            <i *ngIf="dir.isEmpty()" class="material-icons md-18">stop</i>
-            <i *ngIf="!dir.isEmpty() && dir.expanded" (click)="dir.toggle()" class="material-icons md-18">expand_more</i>
-            <i *ngIf="!dir.isEmpty() && !dir.expanded" (click)="dir.toggle()" class="material-icons md-18">chevron_right</i>
-            <span (click)="selectDirectory(dir)">
-                {{dir.name}}
-            </span>
-            <i *ngIf="dir === selectedDirectory" class="material-icons md-18" (click)="openDialog(dir)" style="float:right;">add</i>
-        </a>
-        <div *ngIf="dir.expanded">
-            <sub-tree-view [directories]="dir.directories" [selectedDirectory]="selectedDirectory"
+<sub-tree-view [directory]="directory" 
+                    [selectedDirectory]="selectedDirectory"
+                    [selectedFile] = "selectedFile"
                     (onSelectDirectory)="selectDirectory($event)"
                     (onSelectFile)="selectFile($event)"
-                    (onOpenDialog)="openDialog($event)"></sub-tree-view>
-            <ul>
-                <li *ngFor="let file of dir.files" (onSelectFile)="selectFile(file.id)">
-                    <a [class.selected]='file === selectedFile'>
-                        <span>
-                            {{file.name}}
-                        </span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </li>
-</ul>`, 
+                    (onOpenDialog)="openDialog($event)"></sub-tree-view> 
+`,  
     directives: [SubTreeView,NewDirectoryDialog] 
 }) 
 
@@ -58,20 +36,20 @@ export class TreeView implements OnInit{
     @Input() hasFiles: boolean=false;
     @Input() selectedId: number;
     
-    @Output() onSelectDirectory: EventEmitter<Directory>= new EventEmitter<Directory>();
+    @Output() onSelectDirectory: EventEmitter<myDirectory>= new EventEmitter<myDirectory>();
     @Output() onSelectFile: EventEmitter<File>= new EventEmitter<File>();
     
     
     private showDialog:boolean =false;
-    private directories: Array<Directory>;
-    private selectedDirectory:Directory;
+    private directory: myDirectory = new myDirectory(9,"");
+    private selectedDirectory:myDirectory;
     private selectedFile:File;
     
     ngOnInit() {
-        this.directoryManager.getDirectorys().then(dirs =>this.directories = [dirs]);
+        this.directoryManager.getDirectory().then(dir =>this.directory = dir);
     }
     
-    selectDirectory(dir:Directory){
+    selectDirectory(dir:myDirectory){
         this.selectedFile = null;
         this.selectedDirectory = dir;
         this.directoryManager.setFileType(FileType.DIRECTORY);
@@ -85,27 +63,27 @@ export class TreeView implements OnInit{
         this.onSelectFile.emit(file);
     }
       
-    openDialog(dir:Directory){
+    openDialog(dir:myDirectory){
         this.showDialog =  true; 
     }
     
     createDirectory(name:string){
         this.showDialog = false;
-        this.directoryManager.addDirectory(this.selectedDirectory, name).then(dirs => this.directories = [dirs]);
+        this.directoryManager.addDirectory(this.selectedDirectory, name).then(dir => this.directory = dir);
     }
     
     createFile(name:string){
         this.showDialog = false;
-        this.directoryManager.addFile(this.selectedDirectory, name).then(dirs => this.directories = [dirs]);
+        this.directoryManager.addFile(this.selectedDirectory, name).then(dir => this.directory = dir);
     }
     
     ngOnChanges(changes:{[propName:string]:SimpleChange}){
         if (this.selectedId && this.selectedDirectory && this.selectedId != this.selectedDirectory.id){
-            this.findOpenAndSelect(this.selectedId, this.directories[0]);
+            this.findOpenAndSelect(this.selectedId, this.directory);
         }
     }
     
-    private findOpenAndSelect(id:number,dir:Directory){
+    private findOpenAndSelect(id:number,dir:myDirectory){
         console.log("looking for " + id + " in " + dir.name);
         if (dir.id == id){
             console.log("found it ");
