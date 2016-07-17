@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import {myDirectory, LocationDirectory} from './directory/directory';
+import {myDirectory,myFile, LocationDirectory} from './directory/directory';
 
 export var STORY_TEXT = [], LOCATION_TEXT = [], NPC_DIR_TEXT = [], NPC_FILE_TEXT = [];
 
@@ -32,9 +32,9 @@ export var LOCATIONDIRS =
 
 export var NPCDIRS = new myDirectory(1, "ALL",
     [
-        new myDirectory(2, "Adel", [], [{ name: "Valandor", id: 1 }, { name: "Marcel", id: 2 }]),
-        new myDirectory(3, "Garde", [], [{ name: "Fred", id: 3 }])
-    ])
+        new myDirectory(2, "Adel", [], [new myFile("Valandor", 1), new myFile("Marcel", 2 )]),
+        new myDirectory(3, "Garde", [], [new myFile("Fred",3)])
+    ]);
 
 var NEXTIDN: number = 7;
 

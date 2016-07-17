@@ -23,7 +23,6 @@ import {myDirectory} from './directory/directory'
 export class BaseDataManagerMockBackend{
     protected dir:myDirectory;
     protected fileTexts:string[];
-    protected directoryTexts:string[];
     
     getRootDirectory(){
         return this.dir;
@@ -37,7 +36,6 @@ export class BaseDataManagerMockBackend{
     }
     
     private getDirectoryIn(id:number, dir:myDirectory){
-        
         for (let d of dir.directories){
             if(d.id == id ){
                 return d;
@@ -52,10 +50,6 @@ export class BaseDataManagerMockBackend{
     
     
     getDirectoryText(id:number){
-        return this.getDataFile(id,this.directoryTexts);
-    }
-    
-    getFileText(id:number){
         return this.getDataFile(id,this.fileTexts);
     }
     
@@ -68,12 +62,6 @@ export class BaseDataManagerMockBackend{
     }
         
     saveDirectoryText(id:number, markdown:string){
-        if (this.directoryTexts){
-            this.directoryTexts[id] = markdown;
-        }
-    }
-    
-    saveFileText(id:number, markdown:string){
         if (this.fileTexts){
             this.fileTexts[id] = markdown;
         }
@@ -94,7 +82,7 @@ export class StoryDataManagerMockBackend extends BaseDataManagerMockBackend{
     constructor(){
         super();
         this.dir = STORYDIRS;
-        this.directoryTexts = STORY_TEXT;
+        this.fileTexts = STORY_TEXT;
     }    
 }
 
@@ -103,7 +91,7 @@ export class LocationDataManagerMockBackend extends BaseDataManagerMockBackend{
     constructor(){
         super();
         this.dir = LOCATIONDIRS;
-        this.directoryTexts = LOCATION_TEXT;
+        this.fileTexts = LOCATION_TEXT;
     }    
 }
 
@@ -112,7 +100,6 @@ export class NPCDataManagerMockBackend extends BaseDataManagerMockBackend{
     constructor(){
         super();
         this.dir = NPCDIRS;
-        this.directoryTexts = NPC_DIR_TEXT;
-        this.fileTexts = NPC_FILE_TEXT;
+        this.fileTexts = NPC_DIR_TEXT;
     }    
 }

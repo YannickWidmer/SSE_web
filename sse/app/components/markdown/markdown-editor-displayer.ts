@@ -18,7 +18,8 @@
 import {Component, Input,Output,EventEmitter, OnInit,SimpleChange } from '@angular/core';
 
 import {BaseMarkdownManager} from  '../../services/data-manager';
-import {MarkdownService}  from '../../services/markdown-converter' 
+import {MarkdownService}  from '../../services/markdown-converter';
+import {FileInterface} from '../../services/directory/directory' 
 
 
 @Component({
@@ -29,7 +30,7 @@ import {MarkdownService}  from '../../services/markdown-converter'
             <i *ngIf="!editMode" class="material-icons"
                 (click)="edit();">mode_edit</i>
             <i *ngIf="editMode" class="material-icons"
-                (click)="discard();">clear</i>
+                (click)="discard();">undo</i>
             <i *ngIf="editMode" class="material-icons" 
                 (click)="save();">save</i>
             <p  *ngIf="!raw_temp">Edit to add <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a></p>  
@@ -51,7 +52,7 @@ export class MdEditorDisplayerComponent {
     private editMode:boolean;
     
     @Input() manager: BaseMarkdownManager;
-    @Input() selectedId: number;
+    @Input() selectedFile: FileInterface;
     
     constructor(private _converter: MarkdownService) {
         this.md = _converter;
@@ -69,7 +70,7 @@ export class MdEditorDisplayerComponent {
     public save(){
         this.editMode = false;
         this.markdownText = this.raw_temp;
-        this.manager.saveText(this.selectedId,this.markdownText);
+        this.manager.saveText(this.selectedFile,this.markdownText);
     }
     
     public discard(){
@@ -83,7 +84,7 @@ export class MdEditorDisplayerComponent {
         this.raw_temp = '';
         this.markdownText = '';
         this.updateValue();
-        this.manager.getText(this.selectedId).then(raw => this.setValue(raw));
+        this.manager.getText(this.selectedFile).then(raw => this.setValue(raw));
     }
     
     private setValue(text:string) {

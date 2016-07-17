@@ -19,9 +19,9 @@ import {Component } from '@angular/core';
 
 import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer';
 
-import {StoryDataManagerService} from  '../services/data-manager';
+import {StoryDirectoryManagerService} from  '../services/data-manager';
 
-import {myDirectory} from '../services/directory/directory';
+import {myDirectory,Selection} from '../services/directory/directory';
 import {TreeView} from './tree-view/tree-view';
 
 
@@ -31,15 +31,15 @@ import {TreeView} from './tree-view/tree-view';
   templateUrl: 'app/components/story.html'
 })
 export class StoryComponent{
-    private selectedDirectoryId:number;
-    private _dataManagerService: StoryDataManagerService;
+    private selectedDirectory:myDirectory;
+    private _dataManagerService: StoryDirectoryManagerService;
    
     
-    constructor(private  _dataManager:StoryDataManagerService) {
+    constructor(private  _dataManager:StoryDirectoryManagerService) {
         this._dataManagerService = _dataManager;
     }
         
-    select(dir:myDirectory){
-        this.selectedDirectoryId = dir.id;
+    select(selection:Selection){
+        this.selectedDirectory = <myDirectory>selection.object;
     }
 }

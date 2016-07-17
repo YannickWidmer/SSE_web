@@ -5,7 +5,7 @@
  */
 
 import {Component,OnInit, Input, Output, EventEmitter} from '@angular/core'; 
-import {myDirectory,myFile} from '../../services/directory/directory'; 
+import {myDirectory,myFile, FileType,Selection} from '../../services/directory/directory'; 
 
 
 @Component({ 
@@ -13,7 +13,7 @@ import {myDirectory,myFile} from '../../services/directory/directory';
     template: ` 
 <ul id="navcontainer">
     <li>
-        <a [class.selected]='directory === selectedDirectory'  (click)="selectDirectory(directory)">
+        <a [class.selected]='selection != null && directory === selection.object'  (click)="selectThis()">
             <i *ngIf="directory.isEmpty()" class="material-icons md-18">stop</i>
             <i *ngIf="!directory.isEmpty() && directory.expanded" 
                 (click)="directory.toggle()" class="material-icons md-18">expand_more</i>
@@ -22,21 +22,20 @@ import {myDirectory,myFile} from '../../services/directory/directory';
             <span>
                 {{directory.name}}
             </span>
-            <i *ngIf="directory === selectedDirectory" 
+            <i *ngIf="selection && directory === selection.object" 
             class="material-icons md-18" (click)="openDialog(directory)" style="float:right;">add</i>
         </a>
         <div *ngIf="directory.expanded">
             <div *ngFor="let dir of directory.directories" >
                 <sub-tree-view 
-                        [directory]="dir" [selectedDirectory]="selectedDirectory"
+                        [directory]="dir" [selection]="selection"
                         [selectedFile]="selectedFile"
-                        (onSelectDirectory)="selectDirectory($event)"
-                        (onSelectFile)="selectFile($event)"
+                        (onSelect)="select($event)"
                         (onOpenDialog)="openDialog($event)"></sub-tree-view>
             </div>
             <ul>
                 <li *ngFor="let file of directory.files" (click)="selectFile(file)">
-                    <a [class.selected]='file === selectedFile'>
+                    <a [class.selected]='selection != null && file === selection.object'>
                         <span>
                             {{file.name}}
                         </span>
@@ -53,30 +52,26 @@ import {myDirectory,myFile} from '../../services/directory/directory';
 export class SubTreeView{ 
     @Input() directory: myDirectory;
     
-    @Output() onSelectDirectory: EventEmitter<myDirectory>= new EventEmitter<myDirectory>();
-    @Output() onSelectFile: EventEmitter<myFile>= new EventEmitter<myFile>();
+    @Output() onSelect: EventEmitter<Selection>= new EventEmitter<Selection>();
     @Output() onOpenDialog: EventEmitter<myDirectory>= new EventEmitter<myDirectory>();
-    
-    @Input() selectedDirectory:myDirectory;
-    @Input() selectedFile:myFile;
-    
+
+    @Input() selection:Selection;
     
     
-    selectDirectory(dir:myDirectory){
-        this.onSelectDirectory.emit(dir);
+    select(sel:Selection){
+        this.onSelect.emit(sel);
+    }
+
+    selectThis(){
+        this.onSelect.emit(new Selection(this.directory.id,FileType.DIRECTORY,this.directory));
     }
     
     selectFile(file:myFile){
-        this.onSelectFile.emit(file);
+        this.onSelect.emit(new Selection(file.id,FileType.FILE,file));
     }
       
     openDialog(dir:myDirectory){
         this.onOpenDialog.emit(dir);
-    }
-
-    // didn't work without it anymore
-    isEmpty(dir:myDirectory):boolean{
-        return dir.isEmpty();
     }
 
     isExpanded(dir:myDirectory):boolean{
@@ -84,7 +79,6 @@ export class SubTreeView{
     }
 
     toggle(dir:myDirectory):void{
-        
         dir.toggle();
     }
 

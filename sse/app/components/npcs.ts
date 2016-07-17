@@ -18,8 +18,8 @@
 import {Component} from '@angular/core';
 import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer';
 
-import {myDirectory,myFile} from '../services/directory/directory';
-import {NPCDataManagerService} from  '../services/data-manager';
+import {myDirectory,myFile,Selection,FileType} from '../services/directory/directory';
+import {NPCDirectoryManagerService,NPCManagerService} from  '../services/data-manager';
 
 import {TreeView} from './tree-view/tree-view';
 
@@ -29,22 +29,20 @@ import {TreeView} from './tree-view/tree-view';
   templateUrl: 'app/components/npc.html'
 })
 export class NpcsComponent  {
-    private _dataManagerService: NPCDataManagerService;
+    private directoryManagerService: NPCDirectoryManagerService;
+    private npcManagerService: NPCManagerService;
+    private selection:Selection;
     private selectedDirectoryId:number;
     private selectedFileId:number;
+    private fileType = FileType;
     
-    constructor(private  _dataManager:NPCDataManagerService) {
-        this._dataManagerService = _dataManager;
+    constructor(private  _dataManager:NPCDirectoryManagerService,private fileManager:NPCManagerService) {
+        this.directoryManagerService = _dataManager;
+        this.npcManagerService = fileManager;
     }
 
-    selectDirectory(dir:myDirectory){
-        this.selectedDirectoryId = dir.id;
-        this.selectedFileId = null;
-    }
-
-    selectFile(fil:myFile){
-       this.selectedDirectoryId = null;
-       this.selectedFileId = fil.id;
+    select(selection:Selection){
+        this.selection = selection;
     }
 }
 

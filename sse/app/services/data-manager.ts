@@ -6,12 +6,9 @@
 
 
 import {Injectable } from '@angular/core';
-import {StoryDataManagerMockBackend,NPCDataManagerMockBackend,LocationDataManagerMockBackend} from './data-mock-backend';
-import {myDirectory,LocationDirectory} from './directory/directory'
+import {BaseDataManagerMockBackend ,StoryDataManagerMockBackend,NPCDataManagerMockBackend,LocationDataManagerMockBackend} from './data-mock-backend';
+import {myDirectory,FileInterface,LocationDirectory} from './directory/directory'
        
-export enum FileType{
-    FILE,DIRECTORY
-}   
 
 export interface BaseDirectoryManager{
     getDirectory():Promise<myDirectory>;
@@ -20,14 +17,12 @@ export interface BaseDirectoryManager{
     // This will be called when a Folder will be created from a Tree-View. 
     // The Directories should be in the same state as they where when the methdo is called!!! 
     addFile(parent:myDirectory,name:string):Promise<myDirectory>;
-    // Similar to addFolder
-    setFileType(typ:FileType);
 }
 
 export interface BaseMarkdownManager{
     // This is a state machine which is supposed to now if it is working with a file or a Directory, hence we don't see it here
-    saveText(id:number,text:string);
-    getText(id:number):Promise<string>;
+    saveText(dir:FileInterface,text:string);
+    getText(dir:FileInterface):Promise<string>;
 }
 
 export interface BaseLocationManager{
@@ -35,9 +30,28 @@ export interface BaseLocationManager{
     saveLocation(loc:LocationDirectory);
 }
 
-class BaseManagerService implements BaseDirectoryManager, BaseMarkdownManager{
-    manager:StoryDataManagerMockBackend;
-    fileType:FileType = FileType.DIRECTORY;
+class BaseTextManagerService implements BaseMarkdownManager{
+    manager:BaseDataManagerMockBackend;
+
+    public getText(dir:myDirectory):Promise<string>{
+       return Promise.resolve(this.getTextProm(dir));
+    }
+
+    private getTextProm(dir:myDirectory):string{
+        if(dir.text == null){
+            dir.text =this.manager.getDirectoryText(dir.id);
+        }
+        return dir.text;
+    }
+    
+    public saveText(dir:FileInterface,text:string){
+        this.manager.saveDirectoryText(dir.id,text);
+        dir.text = text;
+    }
+}
+
+class BaseManagerService extends BaseTextManagerService implements BaseDirectoryManager{
+
     protected directory:myDirectory;
     
     public getDirectory():Promise<myDirectory>{
@@ -45,25 +59,12 @@ class BaseManagerService implements BaseDirectoryManager, BaseMarkdownManager{
     }
     
     private getDirectoryProm():myDirectory{
-        this.directory = this.manager.getRootDirectory();
+        if(this.directory == null){
+            this.directory = this.manager.getRootDirectory();
+        }
         return this.directory;
     }
     
-    public getText(id:number):Promise<string>{
-        if (this.fileType == FileType.DIRECTORY){
-            return Promise.resolve(this.manager.getDirectoryText(id));
-        }else{
-            return Promise.resolve(this.manager.getFileText(id));
-        }
-    }
-    
-    public saveText(id:number,descr:string){
-        if (this.fileType == FileType.DIRECTORY){
-            this.manager.saveDirectoryText(id,descr);
-        }else{
-            this.manager.saveFileText(id,descr);
-        }
-    }
         
     public addDirectory(parent:myDirectory,name:string){
         return Promise.resolve(this.addDirectoryProm(parent,name));
@@ -78,15 +79,11 @@ class BaseManagerService implements BaseDirectoryManager, BaseMarkdownManager{
     public addFile(parent:myDirectory,name:string){
             return Promise.resolve({});
     }
-    
-    public setFileType(t:FileType){
-        this.fileType = t;
-    }
 }
 
 
 @Injectable()
-export class StoryDataManagerService extends BaseManagerService{
+export class StoryDirectoryManagerService extends BaseManagerService{
     
     constructor(){
         super();
@@ -95,7 +92,7 @@ export class StoryDataManagerService extends BaseManagerService{
 }
 
 @Injectable()
-export class NPCDataManagerService extends BaseManagerService{
+export class NPCDirectoryManagerService extends BaseManagerService{
     
     constructor(){
         super();
@@ -104,7 +101,17 @@ export class NPCDataManagerService extends BaseManagerService{
 }
 
 @Injectable()
-export class LocationDataManagerService extends BaseManagerService implements BaseLocationManager{
+export class NPCManagerService extends BaseTextManagerService{
+    
+    constructor(){
+        super();
+        this.manager = new NPCDataManagerMockBackend();
+    }
+}
+
+
+@Injectable()
+export class LocationDirectroyManagerServices extends BaseManagerService implements BaseLocationManager{
     
     constructor(){
         super();

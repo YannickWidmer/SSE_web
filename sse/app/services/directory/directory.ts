@@ -4,15 +4,41 @@
  * and open the template in the editor.
  */
  
-export class myFile{
-    name:string; 
+export enum FileType{
+    FILE,DIRECTORY
+} 
+
+export class Selection{
     id:number;
+    type:FileType;
+    object:FileInterface;
+    constructor(id:number,type:FileType,object:FileInterface){
+        this.id = id;
+        this.type = type;
+        this.object = object;
+    }
+}  
+
+export interface FileInterface{
+    name:string;
+    id:number;
+    text:string;
 }
 
+export class myFile implements FileInterface{
+    name:string; 
+    id:number;
+    text:string;
 
+    constructor(name:string, id:number){
+        this.name = name;
+        this.id = id;
+    }
+}
 
-export class myDirectory{
+export class myDirectory implements FileInterface{
     name: string;
+    text:string;
     id:number;
     directories: Array<myDirectory>;
     files: Array<myFile>;

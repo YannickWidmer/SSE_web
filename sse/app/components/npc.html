@@ -18,17 +18,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <div>
     <aside>
         <tree-view 
-            [directoryManager]="_dataManagerService" 
-            [hasFiles]="true"
-            (onSelectDirectory)="selectDirectory($event);" 
-            (onSelectFile)="selectFile($event);"
-            [selectedId] ="selectedDirectoryId"></tree-view>
+            [directoryManager]="directoryManagerService" 
+            (onSelect)="select($event);"></tree-view>
     </aside>
 
     <section>
         <my-markdown-displayer-editor 
-        *ngIf="selectedDirectoryId" 
-        [manager]="_dataManagerService" 
-        [selectedId]="selectedDirectoryId"></my-markdown-displayer-editor>
+        *ngIf="selection && selection.type == fileType.DIRECTORY" 
+        [manager]="directoryManagerService" 
+        [selectedFile]="selection.object"></my-markdown-displayer-editor>
+
+
+
+        <my-markdown-displayer-editor 
+        *ngIf="selection && selection.type == fileType.FILE"
+        [manager]="npcManagerService" 
+        [selectedFile]="selection.object"></my-markdown-displayer-editor>
     </section>
 </div>

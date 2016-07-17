@@ -20,8 +20,8 @@ import {Component} from '@angular/core';
 import {MdEditorDisplayerComponent}  from './markdown/markdown-editor-displayer';
 import {DragContainer} from './draggableSVG/draggable-map';
 
-import {LocationDataManagerService} from  '../services/data-manager';
-import {myDirectory} from '../services/directory/directory';
+import {LocationDirectroyManagerServices} from  '../services/data-manager';
+import {myDirectory,FileType,Selection} from '../services/directory/directory';
 import {TreeView} from './tree-view/tree-view';
 
 @Component({
@@ -31,16 +31,16 @@ import {TreeView} from './tree-view/tree-view';
 })
 export class GeographieComponent {
 
-    _dataManagerService: LocationDataManagerService;
-    selectedDirectoryFile: number;
+    _dataManagerService: LocationDirectroyManagerServices;
+    // The selection has to be non null because we use it in the html
+    selection: Selection;
     
-    constructor(private  _dataManager:LocationDataManagerService) {
+    constructor(private  _dataManager:LocationDirectroyManagerServices) {
         this._dataManagerService = _dataManager;
     }
     
-    selectDirectory(dir:myDirectory){
-        console.log("selecting dir " + dir.name);
-        this.selectedDirectoryFile = dir.id;
+    select(selection:Selection){
+        this.selection = selection;
     }
 }
 

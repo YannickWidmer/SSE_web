@@ -22,6 +22,7 @@ import {Component,OnInit,OnChanges,Input,Output,EventEmitter,HostListener} from 
 import {BaseLocationManager} from  '../../services/data-manager';
 import {LocationDirectory} from '../../services/directory/directory';
 import {DragElement} from './drag-element';
+import {Selection,myDirectory,FileType} from '../../services/directory/directory'
 
 class MapPoints{
     x:number;
@@ -31,18 +32,22 @@ class MapPoints{
 @Component({ 
     selector: 'my-drag-map', 
     directives: [DragElement],
+    styleUrls: ['app/components/loader/ring.css'],
     template: 
     `   <div><div class="buttonbar">
             <i *ngIf="!editMode" class="material-icons"
                     (click)="startEdit()">mode_edit</i>  
             <i *ngIf="editMode" class="material-icons" 
-                    (click)="discard()">clear</i>
+                    (click)="clear()">clear</i>
+            <i *ngIf="editMode" class="material-icons" 
+                    (click)="discard()">undo</i>
             <i *ngIf="editMode" class="material-icons" 
                     (click)="save()">save</i>  
             <p  *ngIf="!imageUrl"> Edit to add an URL of a picture to be displayed </p>
         </div>
         <input *ngIf="editMode" value="{{imageUrl}}" (keyup)="imageExists($event.target.value)"
                 style="direction: ltr;width: 100%;" placeholder="URL"/>
+        <div *ngIf="loading" class='uil-ring-css' style='transform:scale(0.6);'><div></div></div>
         <div  id="map">
             <div  *ngIf="imageUrl">
             <img src="{{imageUrl}}" 
@@ -59,16 +64,18 @@ class MapPoints{
         ` 
 }) 
 export class DragContainer implements OnInit, OnChanges{ 
-    @Input() selectedId:number;
+    @Input() selection:Selection;
     @Input() manager:BaseLocationManager;
     
-    @Output() onSelect: EventEmitter<LocationDirectory> = new EventEmitter<LocationDirectory>();
+    @Output() onSelect: EventEmitter<Selection> = new EventEmitter<Selection>();
     
-    selectedDirectory:LocationDirectory;
-    
+    private selectedDirectory:LocationDirectory;
     private cursor:string = "pointer";
     private imageUrl:string;
+    
     private editMode:boolean =false;
+    private loading:boolean=true;
+
     private map:HTMLElement;
     private img:HTMLImageElement  = new Image();    
     private imageOldUrl:string;
@@ -89,10 +96,16 @@ export class DragContainer implements OnInit, OnChanges{
             this.oldPositions[dir] = { x: locDir.positionInParentx, y: locDir.positionInParenty};
         }
     }
+
+    clear(){
+        this.discard();
+        this.imageUrl ="";
+    }
     
     discard(){
         this.imageUrl = this.imageOldUrl;
         this.editMode = false;
+        this.loading = false;
         this.cursor = "pointer";
         let locDir:LocationDirectory;
         for (var dir in this.selectedDirectory.directories){
@@ -104,6 +117,7 @@ export class DragContainer implements OnInit, OnChanges{
     
     save(){
         this.editMode = false;
+        this.loading = false;
         this.cursor = "pointer";
         this.selectedDirectory.imageUrl = this.imageUrl;
     }
@@ -133,7 +147,7 @@ export class DragContainer implements OnInit, OnChanges{
             this.mouseDown = false;
             this.cursor = "grab";
         }else{
-            this.onSelect.emit(d);
+            this.onSelect.emit(new Selection(d.id,FileType.DIRECTORY,d));
         }
     }
     
@@ -175,10 +189,20 @@ export class DragContainer implements OnInit, OnChanges{
     
     ngOnInit(){
         this.map = document.getElementById('map');
-        this.img.onload = (event => this.imageUrl = this.img.src);
-        this.img.onerror = (event => console.log("url error"));  
+        this.img.onload = (event => this.setImageUrl());
+        this.img.onerror = (event => this.notSetImageUrl());  
     }
     
+    private setImageUrl(){
+        this.imageUrl = this.img.src
+        this.loading = false;
+    }
+
+    private notSetImageUrl(){
+        console.log("url error")
+        this.loading = false;
+    }
+
     // Setting selected from outside
     ngOnChanges(){
         if (this.editMode){
@@ -186,7 +210,7 @@ export class DragContainer implements OnInit, OnChanges{
         }
         this.imageUrl = null;
         this.editMode = false;
-        this.manager.getLocation(this.selectedId).then(loc => this.setLocation(loc));
+        this.manager.getLocation(this.selection.id).then(loc => this.setLocation(loc));
     }  
     
     setLocation(loc:LocationDirectory){
@@ -197,6 +221,7 @@ export class DragContainer implements OnInit, OnChanges{
     imageExists(url:string) {
         console.log("checking URL:");
         console.log(url);
+        this.loading = true;
         this.img.src = url;
         console.log("done");
     }
