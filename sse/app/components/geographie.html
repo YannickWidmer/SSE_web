@@ -16,20 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div>
-    <my-dialog-new-directory 
-        [toggler] ="dialogNewDirToggler"
-        (onResultOk)="createFolder($event)"></my-dialog-new-directory>   
-     
-    
     <aside>
-    <tree-view [directories]="directories" 
-        (onSelectFolder)="select($event);" 
-        (onCreateSubDir)="addFolderDialog();"
-        [selectedDirectory]="selectedDirectory"></tree-view>
+    <tree-view 
+        [directoryManager] = "_dataManagerService" 
+        (onSelect)="select($event);"
+        [inputSelection]="selection"></tree-view>
     </aside>
 
     <section>
-        <my-drag-map *ngIf="selectedDirectory" [selectedDirectory]="selectedDirectory"></my-drag-map>
-        <my-markdown-displayer-editor *ngIf="selectedDirectory" [(markdownText)]="rawMarkdown" (onSave)="saveMarkdown($event);"></my-markdown-displayer-editor>
+        <my-drag-map *ngIf="selection" 
+        (onSelect)="select($event);" [selection]="selection" [manager]="_dataManagerService" ></my-drag-map>
+        <my-markdown-displayer-editor *ngIf="selection"  
+            [manager]="_dataManagerService" [selectedFile]="selection.object"></my-markdown-displayer-editor>
     </section>    
 </div>

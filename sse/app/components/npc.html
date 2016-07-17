@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <!--
 Copyright (C) 2016 Yannick
 
@@ -15,15 +15,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <div>
     <aside>
-    <tree-view
-        [directoryManager] = "_dataManagerService" 
-        (onSelect)="select($event);"></tree-view>
+        <tree-view 
+            [directoryManager]="directoryManagerService" 
+            (onSelect)="select($event);"></tree-view>
     </aside>
 
     <section>
-        <my-markdown-displayer-editor *ngIf="selectedDirectory" [manager]="_dataManagerService" [selectedFile]="selectedDirectory"></my-markdown-displayer-editor>
+        <my-markdown-displayer-editor 
+        *ngIf="selection && selection.type == fileType.DIRECTORY" 
+        [manager]="directoryManagerService" 
+        [selectedFile]="selection.object"></my-markdown-displayer-editor>
+
+
+
+        <my-markdown-displayer-editor 
+        *ngIf="selection && selection.type == fileType.FILE"
+        [manager]="npcManagerService" 
+        [selectedFile]="selection.object"></my-markdown-displayer-editor>
     </section>
 </div>

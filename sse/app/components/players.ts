@@ -15,19 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnInit } from 'angular2/core';
-import {RouteParams} from 'angular2/router';
+import {Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'my-player-characters',
   templateUrl: 'app/component/foes.html'
 })
 export class PlayersComponent implements OnInit {
-    
-    constructor(
-         private _routeParams: RouteParams) {
-    }
-    
+        
     ngOnInit() {
         //let id = +this._routeParams.get('id');
         //this._heroService.getHeroesSlowly().then(heroes => this.heroes = heroes);

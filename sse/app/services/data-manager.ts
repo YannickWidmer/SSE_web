@@ -4,70 +4,131 @@
  * and open the template in the editor.
  */
 
-import {Injectable } from 'angular2/core';
-import {STORYDIRS,STORYFILES,NEXTID, LOCATIONDIRS,LOCATIONFILES} from './mock-data';
-import {Directory} from './../components/directory/directory'
 
-class Base{
-    protected dirs:Directory;
-    protected files;
-    
-    getDirectorys(){
-        return Promise.resolve(this.dirs);
+import {Injectable } from '@angular/core';
+import {BaseDataManagerMockBackend ,StoryDataManagerMockBackend,NPCDataManagerMockBackend,LocationDataManagerMockBackend} from './data-mock-backend';
+import {myDirectory,FileInterface,LocationDirectory} from './directory/directory'
+       
+
+export interface BaseDirectoryManager{
+    getDirectory():Promise<myDirectory>;
+    // This will be called when a Tree-View is created
+    addDirectory(parent:myDirectory,name:string):Promise<myDirectory>;
+    // This will be called when a Folder will be created from a Tree-View. 
+    // The Directories should be in the same state as they where when the methdo is called!!! 
+    addFile(parent:myDirectory,name:string):Promise<myDirectory>;
+}
+
+export interface BaseMarkdownManager{
+    // This is a state machine which is supposed to now if it is working with a file or a Directory, hence we don't see it here
+    saveText(dir:FileInterface,text:string);
+    getText(dir:FileInterface):Promise<string>;
+}
+
+export interface BaseLocationManager{
+    getLocation(id:number):Promise<LocationDirectory>;
+    saveLocation(loc:LocationDirectory);
+}
+
+class BaseTextManagerService implements BaseMarkdownManager{
+    manager:BaseDataManagerMockBackend;
+
+    public getText(dir:myDirectory):Promise<string>{
+       return Promise.resolve(this.getTextProm(dir));
     }
+
+    private getTextProm(dir:myDirectory):string{
+        if(dir.text == null){
+            dir.text =this.manager.getDirectoryText(dir.id);
+        }
+        return dir.text;
+    }
+    
+    public saveText(dir:FileInterface,text:string){
+        this.manager.saveDirectoryText(dir.id,text);
+        dir.text = text;
+    }
+}
+
+class BaseManagerService extends BaseTextManagerService implements BaseDirectoryManager{
+
+    protected directory:myDirectory;
+    
+    public getDirectory():Promise<myDirectory>{
+        return Promise.resolve(this.getDirectoryProm());
+    }
+    
+    private getDirectoryProm():myDirectory{
+        if(this.directory == null){
+            this.directory = this.manager.getRootDirectory();
+        }
+        return this.directory;
+    }
+    
         
-    getData(id:number){
-        return Promise.resolve(this.getDataFile(id));
+    public addDirectory(parent:myDirectory,name:string){
+        return Promise.resolve(this.addDirectoryProm(parent,name));
     }
     
-    private getDataFile(id:number){
-        if(this.files[id] != undefined){
-            return this.files[id];
-        }else{
-            return '';
-        }
+    protected addDirectoryProm(parent:myDirectory,name:string){
+        let newId:number = this.manager.addFolder(parent.id,name);
+        parent.directories.push(new myDirectory(newId,name));
+        return this.directory;
     }
     
-    save(id:number, markdown:string){
-        this.files[id] = markdown;
+    public addFile(parent:myDirectory,name:string){
+            return Promise.resolve({});
     }
+}
+
+
+@Injectable()
+export class StoryDirectoryManagerService extends BaseManagerService{
     
-    public addFolder(parent:Directory,name:string){
-        return Promise.resolve(this.addFolderData(parent,name));
-    }
-    
-    private addFolderData(parent:Directory,name:string){
-        for (var key in this.dirs.directories){
-            this.searchParentAddNewFolder(this.dirs.directories[key], parent.id,name);
-        }
-        return this.dirs;
-    }
-    
-    private searchParentAddNewFolder(dir:Directory,parentId:number,name:string){
-        if (dir.id === parentId)
-            dir.directories.push(new Directory(NEXTID(),name));
-        else{
-            for (var key in dir.directories){
-                this.searchParentAddNewFolder(dir.directories[key],parentId,name);
-            }
-        }
+    constructor(){
+        super();
+        this.manager = new StoryDataManagerMockBackend();
     }
 }
 
 @Injectable()
-export class StoryDataManagerService extends Base{
+export class NPCDirectoryManagerService extends BaseManagerService{
+    
     constructor(){
         super();
-        this.dirs = STORYDIRS;
-        this.files = STORYFILES;
-    }    
+        this.manager = new NPCDataManagerMockBackend();
+    }
 }
 
 @Injectable()
-export class LocationDataManagerService extends Base{
+export class NPCManagerService extends BaseTextManagerService{
+    
     constructor(){
         super();
-        this.dirs = LOCATIONDIRS;
-        this.files = LOCATIONFILES;
-    }    
+        this.manager = new NPCDataManagerMockBackend();
+    }
+}
+
+
+@Injectable()
+export class LocationDirectroyManagerServices extends BaseManagerService implements BaseLocationManager{
+    
+    constructor(){
+        super();
+        this.manager = new LocationDataManagerMockBackend();
+    }
+    
+    protected addDirectoryProm(parent:myDirectory,name:string){
+        let newId:number = this.manager.addFolder(parent.id,name);
+        parent.directories.push(new LocationDirectory(newId,name,[],[],name));
+        return this.directory;
+    } 
+    
+    getLocation(id:number){
+        return Promise.resolve(this.manager.getDirectory(id));
+    }
+    
+    saveLocation(loc:LocationDirectory){
+        // TODO
+    }  
 }

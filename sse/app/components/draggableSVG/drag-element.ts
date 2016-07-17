@@ -15,23 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-import {Component,Input,Output,EventEmitter,HostListener} from 'angular2/core';
+import {Component,Input,Output,EventEmitter,HostListener} from '@angular/core';
 
-export interface DragMouvement{
-    dx:number;
-    dy:number;
-}
 
 @Component({
     selector: 'my-draggable',
-    template: '<p id="draggable" [style.left]="getLeft()"  [style.top]="getTop()">{{name}}</p>'
+    template: '<p id="draggable" [style.cursor]="cursor" [style.left]="getLeft()"  [style.top]="getTop()">{{name}}</p>'
 })
 export class DragElement {
 
     @Input() x:number;
     @Input() y:number;
     @Input() name:string;
-    @Input() editMode:boolean;
+    @Input() cursor:string;
+    @Output() onDown:EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
+    @Output() onUp:EventEmitter<number> = new EventEmitter<number>();
     
     getLeft():string{
          return this.x+"px";
@@ -40,33 +38,15 @@ export class DragElement {
          return this.y+"px";
     }
 
-    @Output() onDrag: EventEmitter<DragMouvement>= new EventEmitter();
-    private last: MouseEvent;
-    private mouseDown : boolean = false;
-
     @HostListener('mousedown', ['$event'])
     onMousedown(event:MouseEvent) {
-        if (this.editMode){
-            event.preventDefault();
-            this.mouseDown = true;
-            this.last = event;
-        }
+        event.preventDefault();
+        this.onDown.emit(event);
     }
 
     @HostListener('mouseup', ['$event'])
     onMouseup(event:MouseEvent) {
-        if(this.editMode){
-            event.preventDefault();
-            this.mouseDown = false;
-        }
-    }
-
-    @HostListener('mousemove', ['$event'])
-    onMousemove(event: MouseEvent) {
-        if (this.editMode && this.mouseDown) {
-            event.preventDefault();
-            this.onDrag.emit({dx:event.clientX - this.last.clientX, dy:event.clientY - this.last.clientY})  
-            this.last = event;  
-        }
+        event.preventDefault();
+        this.onUp.emit(0);
     }
 }
